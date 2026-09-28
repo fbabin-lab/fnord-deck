@@ -1,0 +1,44 @@
+[build-system]
+requires = ["setuptools==82.0.1"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "streamdeck-linux-controller"
+version = "0.1.0"
+description = "Standalone, local-first Stream Deck XL controller for Ubuntu 24.04"
+readme = "README.md"
+license = "GPL-3.0-only"
+license-files = ["LICENSE"]
+requires-python = ">=3.12,<3.14"
+authors = [{name = "Stream Deck Linux project"}]
+dependencies = [
+  "Pillow==12.3.0", "CairoSVG==2.8.2", "defusedxml==0.7.1",
+  "jsonschema==4.26.0", "streamdeck==0.10.0"
+]
+
+[project.scripts]
+sdl-controller = "sdl_controller.main:main"
+sdlctl = "sdl_cli.main:main"
+sdl-session = "sdl_cli.session:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+sdl_core = ["*.json", "py.typed"]
+sdl_controller = ["py.typed"]
+sdl_cli = ["py.typed"]
+
+[tool.pytest.ini_options]
+pythonpath = ["src"]
+testpaths = ["tests"]
+asyncio_mode = "auto"
+addopts = "-ra"
+markers = ["hardware: requires a physical USB Stream Deck", "systemd: requires a real systemd user session"]
+
+[tool.ruff]
+target-version = "py312"
+line-length = 100
+
+[tool.ruff.lint]
+select = ["E4", "E7", "E9", "F"]

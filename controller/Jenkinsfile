@@ -1,0 +1,23 @@
+// Optional self-hosted CI. Use an Ubuntu 24.04 agent with the documented system libraries.
+pipeline {
+  agent any
+  options { timestamps(); timeout(time: 15, unit: 'MINUTES') }
+  stages {
+    stage('Environment') {
+      steps {
+        sh '''
+          python3 --version
+          python3 -m venv .venv
+          .venv/bin/python -m pip install -r requirements-dev.lock
+        '''
+      }
+    }
+    stage('Tests') {
+      steps {
+        sh '.venv/bin/python -m pytest -q --junitxml=results.xml'
+        sh '.venv/bin/python scripts/check-source.py'
+      }
+    }
+  }
+  post { always { junit allowEmptyResults: true, testResults: 'results.xml' } }
+}

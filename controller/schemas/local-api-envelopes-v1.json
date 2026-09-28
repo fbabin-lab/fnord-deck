@@ -1,0 +1,821 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Stream Deck Linux local API 1.0 envelopes and result shapes",
+  "description": "Transport framing and parameter schemas are documented separately. Result schemas require stable top-level fields and allow additive fields; nested configuration and domain records use their documented contracts. Select a $defs Result_METHOD to validate a method result.",
+  "oneOf": [
+    {
+      "$ref": "#/$defs/Request"
+    },
+    {
+      "$ref": "#/$defs/SuccessResponse"
+    },
+    {
+      "$ref": "#/$defs/ErrorResponse"
+    },
+    {
+      "$ref": "#/$defs/EventNotification"
+    }
+  ],
+  "$defs": {
+    "Request": {
+      "type": "object",
+      "properties": {
+        "jsonrpc": {
+          "const": "2.0"
+        },
+        "id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        },
+        "method": {
+          "type": "string",
+          "minLength": 1
+        },
+        "params": {
+          "type": "object"
+        }
+      },
+      "required": [
+        "jsonrpc",
+        "id",
+        "method"
+      ],
+      "additionalProperties": true
+    },
+    "SuccessResponse": {
+      "type": "object",
+      "properties": {
+        "jsonrpc": {
+          "const": "2.0"
+        },
+        "id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        },
+        "result": {
+          "type": "object"
+        }
+      },
+      "required": [
+        "jsonrpc",
+        "id",
+        "result"
+      ],
+      "additionalProperties": false
+    },
+    "ErrorResponse": {
+      "type": "object",
+      "properties": {
+        "jsonrpc": {
+          "const": "2.0"
+        },
+        "id": {
+          "type": "string"
+        },
+        "error": {
+          "type": "object",
+          "properties": {
+            "code": {
+              "type": "integer"
+            },
+            "message": {
+              "type": "string"
+            },
+            "data": {
+              "type": "object",
+              "properties": {
+                "code": {
+                  "type": "string"
+                },
+                "messageKey": {
+                  "type": "string"
+                },
+                "details": {}
+              },
+              "required": [
+                "code",
+                "messageKey",
+                "details"
+              ],
+              "additionalProperties": true
+            }
+          },
+          "required": [
+            "code",
+            "message",
+            "data"
+          ],
+          "additionalProperties": true
+        }
+      },
+      "required": [
+        "jsonrpc",
+        "id",
+        "error"
+      ],
+      "additionalProperties": false
+    },
+    "RuntimeEvent": {
+      "type": "object",
+      "properties": {
+        "runtimeEpoch": {
+          "type": "string"
+        },
+        "eventSequence": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "revision": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "type": {
+          "type": "string"
+        },
+        "payload": {
+          "type": "object"
+        }
+      },
+      "required": [
+        "runtimeEpoch",
+        "eventSequence",
+        "revision",
+        "type",
+        "payload"
+      ],
+      "additionalProperties": true
+    },
+    "EventNotification": {
+      "type": "object",
+      "properties": {
+        "jsonrpc": {
+          "const": "2.0"
+        },
+        "method": {
+          "const": "runtime.event"
+        },
+        "params": {
+          "$ref": "#/$defs/RuntimeEvent"
+        }
+      },
+      "required": [
+        "jsonrpc",
+        "method",
+        "params"
+      ],
+      "additionalProperties": false
+    },
+    "Result_system.hello": {
+      "type": "object",
+      "properties": {
+        "apiMajor": {
+          "const": 1
+        },
+        "apiMinor": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "runtimeVersion": {
+          "type": "string"
+        },
+        "maxFrameBytes": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "capabilities": {
+          "type": "object"
+        }
+      },
+      "required": [
+        "apiMajor",
+        "apiMinor",
+        "runtimeVersion",
+        "maxFrameBytes",
+        "capabilities"
+      ],
+      "additionalProperties": true
+    },
+    "Result_system.snapshot": {
+      "type": "object",
+      "properties": {
+        "runtimeVersion": {
+          "type": "string"
+        },
+        "runtimeEpoch": {
+          "type": "string"
+        },
+        "eventSequence": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "revision": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "configurationId": {
+          "type": "string"
+        },
+        "currentPageId": {
+          "type": "string"
+        },
+        "pageGeneration": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "paused": {
+          "type": "boolean"
+        },
+        "device": {
+          "type": "object"
+        },
+        "simulator": {
+          "type": "boolean"
+        },
+        "executionEnabled": {
+          "type": "boolean"
+        },
+        "plugins": {
+          "type": "object"
+        },
+        "lastError": {},
+        "recovery": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "executionRecovery": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "recentExecutions": {
+          "type": "array"
+        }
+      },
+      "required": [
+        "runtimeVersion",
+        "runtimeEpoch",
+        "eventSequence",
+        "revision",
+        "configurationId",
+        "currentPageId",
+        "pageGeneration",
+        "paused",
+        "device",
+        "simulator",
+        "executionEnabled",
+        "plugins",
+        "lastError",
+        "recovery",
+        "executionRecovery",
+        "recentExecutions"
+      ],
+      "additionalProperties": true
+    },
+    "Result_system.diagnostics": {
+      "type": "object",
+      "properties": {
+        "runtimeVersion": {
+          "type": "string"
+        },
+        "python": {
+          "type": "string"
+        },
+        "platform": {
+          "type": "string"
+        },
+        "dependencies": {
+          "type": "object"
+        },
+        "font": {
+          "type": "string"
+        },
+        "hidBackend": {
+          "type": "string"
+        },
+        "hidLibrary": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "codecs": {
+          "type": "object"
+        },
+        "graphicalSessionAvailable": {
+          "type": [
+            "boolean",
+            "null"
+          ]
+        },
+        "hardwareVerification": {
+          "type": "string"
+        },
+        "pluginsSupported": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "runtimeVersion",
+        "python",
+        "platform",
+        "dependencies",
+        "font",
+        "hidBackend",
+        "hidLibrary",
+        "codecs",
+        "graphicalSessionAvailable",
+        "hardwareVerification",
+        "pluginsSupported"
+      ],
+      "additionalProperties": true
+    },
+    "Result_events.subscribe": {
+      "type": "object",
+      "properties": {
+        "subscriptionId": {
+          "type": "string"
+        },
+        "runtimeEpoch": {
+          "type": "string"
+        },
+        "eventSequence": {
+          "type": "integer",
+          "minimum": 0
+        }
+      },
+      "required": [
+        "subscriptionId",
+        "runtimeEpoch",
+        "eventSequence"
+      ],
+      "additionalProperties": true
+    },
+    "Result_configuration.get": {
+      "type": "object",
+      "properties": {
+        "document": {
+          "type": "object"
+        },
+        "revision": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "sha256": {
+          "type": "string"
+        },
+        "warnings": {
+          "type": "array"
+        }
+      },
+      "required": [
+        "document",
+        "revision",
+        "sha256",
+        "warnings"
+      ],
+      "additionalProperties": true
+    },
+    "Result_configuration.validate": {
+      "type": "object",
+      "properties": {
+        "errors": {
+          "type": "array"
+        },
+        "warnings": {
+          "type": "array"
+        }
+      },
+      "required": [
+        "errors",
+        "warnings"
+      ],
+      "additionalProperties": true
+    },
+    "Result_configuration.review": {
+      "type": "object",
+      "properties": {
+        "contentHash": {
+          "type": "string"
+        },
+        "reviewToken": {
+          "type": "string"
+        },
+        "expiresInSeconds": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "actions": {
+          "type": "array"
+        }
+      },
+      "required": [
+        "contentHash",
+        "reviewToken",
+        "expiresInSeconds",
+        "actions"
+      ],
+      "additionalProperties": true
+    },
+    "Result_configuration.apply": {
+      "type": "object",
+      "properties": {
+        "revision": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "configurationApplied": {
+          "type": "boolean"
+        },
+        "deviceSynchronized": {
+          "type": "boolean"
+        },
+        "warnings": {
+          "type": "array"
+        },
+        "operationId": {
+          "type": "string"
+        },
+        "deduplicated": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "revision",
+        "configurationApplied",
+        "deviceSynchronized",
+        "warnings",
+        "operationId"
+      ],
+      "additionalProperties": true
+    },
+    "Result_configuration.history": {
+      "type": "object",
+      "properties": {
+        "revisions": {
+          "type": "array"
+        },
+        "nextCursor": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 0
+        }
+      },
+      "required": [
+        "revisions",
+        "nextCursor"
+      ],
+      "additionalProperties": true
+    },
+    "Result_asset.beginImport": {
+      "type": "object",
+      "properties": {
+        "uploadId": {
+          "type": "string"
+        },
+        "maxChunkBytes": {
+          "type": "integer",
+          "minimum": 0
+        }
+      },
+      "required": [
+        "uploadId",
+        "maxChunkBytes"
+      ],
+      "additionalProperties": true
+    },
+    "Result_asset.writeChunk": {
+      "type": "object",
+      "properties": {
+        "sequence": {
+          "type": "integer",
+          "minimum": 0
+        }
+      },
+      "required": [
+        "sequence"
+      ],
+      "additionalProperties": true
+    },
+    "Result_asset.finishImport": {
+      "type": "object",
+      "properties": {
+        "assetId": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "originalBytes": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "canonicalSha256": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "assetId",
+        "name",
+        "originalBytes",
+        "canonicalSha256"
+      ],
+      "additionalProperties": true
+    },
+    "Result_asset.readChunk": {
+      "type": "object",
+      "properties": {
+        "data": {
+          "type": "string"
+        },
+        "totalBytes": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "offset": {
+          "type": "integer",
+          "minimum": 0
+        }
+      },
+      "required": [
+        "data",
+        "totalBytes",
+        "offset"
+      ],
+      "additionalProperties": true
+    },
+    "Result_device.list": {
+      "type": "object",
+      "properties": {
+        "devices": {
+          "type": "array"
+        }
+      },
+      "required": [
+        "devices"
+      ],
+      "additionalProperties": true
+    },
+    "Result_device.retry": {
+      "type": "object",
+      "properties": {
+        "ok": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "ok"
+      ],
+      "additionalProperties": true
+    },
+    "Result_runtime.navigate": {
+      "type": "object",
+      "properties": {
+        "pageId": {
+          "type": "string"
+        },
+        "pageGeneration": {
+          "type": "integer",
+          "minimum": 0
+        }
+      },
+      "required": [
+        "pageId",
+        "pageGeneration"
+      ],
+      "additionalProperties": true
+    },
+    "Result_runtime.pause": {
+      "type": "object",
+      "properties": {
+        "paused": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "paused"
+      ],
+      "additionalProperties": true
+    },
+    "Result_session.update": {
+      "type": "object",
+      "properties": {
+        "ok": {
+          "type": "boolean"
+        },
+        "graphicalSessionAvailable": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "ok",
+        "graphicalSessionAvailable"
+      ],
+      "additionalProperties": true
+    },
+    "Result_execution.test": {
+      "type": "object",
+      "properties": {
+        "runId": {
+          "type": "string"
+        },
+        "state": {
+          "type": "string"
+        },
+        "deduplicated": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "runId",
+        "state"
+      ],
+      "additionalProperties": true
+    },
+    "Result_execution.list": {
+      "type": "object",
+      "properties": {
+        "executions": {
+          "type": "array"
+        },
+        "nextCursor": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 0
+        }
+      },
+      "required": [
+        "executions",
+        "nextCursor"
+      ],
+      "additionalProperties": true
+    },
+    "Result_execution.cancel": {
+      "type": "object",
+      "properties": {
+        "ok": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "ok"
+      ],
+      "additionalProperties": true
+    },
+    "Result_plugins.list": {
+      "type": "object",
+      "properties": {
+        "supported": {
+          "const": false
+        },
+        "reason": {
+          "type": "string"
+        },
+        "instances": {
+          "type": "array",
+          "maxItems": 0
+        }
+      },
+      "required": [
+        "supported",
+        "reason",
+        "instances"
+      ],
+      "additionalProperties": true
+    },
+    "Result_render.preview": {
+      "type": "object",
+      "properties": {
+        "mediaType": {
+          "const": "image/png"
+        },
+        "data": {
+          "type": "string"
+        },
+        "pageId": {
+          "type": "string"
+        },
+        "revision": {
+          "type": "integer",
+          "minimum": 0
+        }
+      },
+      "required": [
+        "mediaType",
+        "data",
+        "pageId",
+        "revision"
+      ],
+      "additionalProperties": true
+    },
+    "Result_simulator.key": {
+      "type": "object",
+      "properties": {
+        "ok": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "ok"
+      ],
+      "additionalProperties": true
+    },
+    "Result_simulator.connection": {
+      "type": "object",
+      "properties": {
+        "ok": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "ok"
+      ],
+      "additionalProperties": true
+    }
+  },
+  "x-methodResults": {
+    "system.hello": {
+      "$ref": "#/$defs/Result_system.hello"
+    },
+    "system.snapshot": {
+      "$ref": "#/$defs/Result_system.snapshot"
+    },
+    "system.diagnostics": {
+      "$ref": "#/$defs/Result_system.diagnostics"
+    },
+    "events.subscribe": {
+      "$ref": "#/$defs/Result_events.subscribe"
+    },
+    "configuration.get": {
+      "$ref": "#/$defs/Result_configuration.get"
+    },
+    "configuration.validate": {
+      "$ref": "#/$defs/Result_configuration.validate"
+    },
+    "configuration.review": {
+      "$ref": "#/$defs/Result_configuration.review"
+    },
+    "configuration.apply": {
+      "$ref": "#/$defs/Result_configuration.apply"
+    },
+    "configuration.history": {
+      "$ref": "#/$defs/Result_configuration.history"
+    },
+    "asset.beginImport": {
+      "$ref": "#/$defs/Result_asset.beginImport"
+    },
+    "asset.writeChunk": {
+      "$ref": "#/$defs/Result_asset.writeChunk"
+    },
+    "asset.finishImport": {
+      "$ref": "#/$defs/Result_asset.finishImport"
+    },
+    "asset.readChunk": {
+      "$ref": "#/$defs/Result_asset.readChunk"
+    },
+    "device.list": {
+      "$ref": "#/$defs/Result_device.list"
+    },
+    "device.retry": {
+      "$ref": "#/$defs/Result_device.retry"
+    },
+    "runtime.navigate": {
+      "$ref": "#/$defs/Result_runtime.navigate"
+    },
+    "runtime.pause": {
+      "$ref": "#/$defs/Result_runtime.pause"
+    },
+    "session.update": {
+      "$ref": "#/$defs/Result_session.update"
+    },
+    "execution.test": {
+      "$ref": "#/$defs/Result_execution.test"
+    },
+    "execution.list": {
+      "$ref": "#/$defs/Result_execution.list"
+    },
+    "execution.cancel": {
+      "$ref": "#/$defs/Result_execution.cancel"
+    },
+    "plugins.list": {
+      "$ref": "#/$defs/Result_plugins.list"
+    },
+    "render.preview": {
+      "$ref": "#/$defs/Result_render.preview"
+    },
+    "simulator.key": {
+      "$ref": "#/$defs/Result_simulator.key"
+    },
+    "simulator.connection": {
+      "$ref": "#/$defs/Result_simulator.connection"
+    }
+  }
+}

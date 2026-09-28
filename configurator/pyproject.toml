@@ -1,0 +1,40 @@
+[build-system]
+requires = ["setuptools==82.0.1"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "streamdeck-linux-configurator"
+version = "0.1.0"
+description = "Independent offline-capable Stream Deck XL configurator for Ubuntu 24.04"
+readme = "README.md"
+license = "GPL-3.0-only"
+license-files = ["LICENSE"]
+requires-python = ">=3.12,<3.14"
+authors = [{name = "Stream Deck Linux project"}]
+dependencies = [
+  "PySide6-Essentials==6.11.2", "Pillow==12.3.0", "CairoSVG==2.8.2",
+  "defusedxml==0.7.1", "jsonschema==4.26.0"
+]
+
+[project.scripts]
+sdl-configurator = "sdl_configurator.main:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+sdl_core = ["*.json", "py.typed"]
+sdl_configurator = ["locales/*.json", "theme.qss", "py.typed"]
+
+[tool.pytest.ini_options]
+pythonpath = ["src"]
+testpaths = ["tests"]
+asyncio_mode = "auto"
+addopts = "-ra"
+markers = ["gui: requires PySide6 and a Qt platform plugin", "integration: uses the real Controller simulator", "real_execution: enables an isolated test command in the simulator"]
+
+[tool.ruff]
+target-version = "py312"
+line-length = 110
+[tool.ruff.lint]
+select = ["E4", "E7", "E9", "F"]

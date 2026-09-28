@@ -1,0 +1,550 @@
+{
+  "type": "object",
+  "properties": {
+    "schemaVersion": {
+      "const": "1.0"
+    },
+    "configurationId": {
+      "type": "string",
+      "format": "uuid",
+      "pattern": "^[0-9a-f-]{36}$"
+    },
+    "name": {
+      "type": "string",
+      "maxLength": 256,
+      "pattern": "^[^\\u0000]*$"
+    },
+    "target": {
+      "type": "object",
+      "properties": {
+        "adapterId": {
+          "const": "elgato.streamdeck"
+        },
+        "vendorId": {
+          "const": 4057
+        },
+        "productId": {
+          "const": 108
+        },
+        "serialNumber": {
+          "anyOf": [
+            {
+              "type": "null"
+            },
+            {
+              "type": "string",
+              "maxLength": 128,
+              "pattern": "^[^\\u0000]*$"
+            }
+          ]
+        }
+      },
+      "required": [
+        "adapterId",
+        "vendorId",
+        "productId",
+        "serialNumber"
+      ],
+      "additionalProperties": false
+    },
+    "layout": {
+      "type": "object",
+      "properties": {
+        "rows": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 16
+        },
+        "columns": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 16
+        },
+        "keyWidth": {
+          "type": "integer",
+          "minimum": 32,
+          "maximum": 512
+        },
+        "keyHeight": {
+          "type": "integer",
+          "minimum": 32,
+          "maximum": 512
+        }
+      },
+      "required": [
+        "rows",
+        "columns",
+        "keyWidth",
+        "keyHeight"
+      ],
+      "additionalProperties": false
+    },
+    "rootPageId": {
+      "type": "string",
+      "format": "uuid",
+      "pattern": "^[0-9a-f-]{36}$"
+    },
+    "settings": {
+      "type": "object",
+      "properties": {
+        "brightnessPercent": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 100
+        },
+        "locale": {
+          "enum": [
+            "en",
+            "fr"
+          ]
+        }
+      },
+      "required": [
+        "brightnessPercent",
+        "locale"
+      ],
+      "additionalProperties": false
+    },
+    "pages": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 1024,
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "pattern": "^[0-9a-f-]{36}$"
+          },
+          "name": {
+            "type": "string",
+            "maxLength": 256,
+            "pattern": "^[^\\u0000]*$"
+          },
+          "parentPageId": {
+            "anyOf": [
+              {
+                "type": "null"
+              },
+              {
+                "type": "string",
+                "format": "uuid",
+                "pattern": "^[0-9a-f-]{36}$"
+              }
+            ]
+          },
+          "buttons": {
+            "type": "array",
+            "maxItems": 256,
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "format": "uuid",
+                  "pattern": "^[0-9a-f-]{36}$"
+                },
+                "keyIndex": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 255
+                },
+                "enabled": {
+                  "type": "boolean"
+                },
+                "appearance": {
+                  "type": "object",
+                  "properties": {
+                    "iconAssetId": {
+                      "anyOf": [
+                        {
+                          "type": "null"
+                        },
+                        {
+                          "type": "string",
+                          "pattern": "^sha256:[0-9a-f]{64}$"
+                        }
+                      ]
+                    },
+                    "text": {
+                      "type": "string",
+                      "maxLength": 1024,
+                      "pattern": "^[^\\u0000]*$"
+                    },
+                    "layout": {
+                      "enum": [
+                        "iconOnly",
+                        "textOnly",
+                        "iconAboveText",
+                        "textOverlay"
+                      ]
+                    },
+                    "backgroundColor": {
+                      "type": "string",
+                      "pattern": "^#[0-9a-fA-F]{6}$"
+                    },
+                    "textColor": {
+                      "type": "string",
+                      "pattern": "^#[0-9a-fA-F]{6}$"
+                    },
+                    "fontFamily": {
+                      "type": "string",
+                      "maxLength": 128,
+                      "pattern": "^[^\\u0000]*$"
+                    },
+                    "fontSizePx": {
+                      "type": "integer",
+                      "minimum": 8,
+                      "maximum": 128
+                    },
+                    "fontWeight": {
+                      "enum": [
+                        "normal",
+                        "bold"
+                      ]
+                    },
+                    "textAlign": {
+                      "enum": [
+                        "left",
+                        "center",
+                        "right"
+                      ]
+                    },
+                    "imageFit": {
+                      "enum": [
+                        "contain",
+                        "cover",
+                        "stretch"
+                      ]
+                    },
+                    "paddingPx": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 20
+                    },
+                    "dynamic": {
+                      "anyOf": [
+                        {
+                          "type": "null"
+                        },
+                        {
+                          "type": "object",
+                          "maxProperties": 32
+                        }
+                      ]
+                    }
+                  },
+                  "required": [
+                    "iconAssetId",
+                    "text",
+                    "layout",
+                    "backgroundColor",
+                    "textColor",
+                    "fontFamily",
+                    "fontSizePx",
+                    "fontWeight",
+                    "textAlign",
+                    "imageFit",
+                    "paddingPx",
+                    "dynamic"
+                  ],
+                  "additionalProperties": false
+                },
+                "action": {
+                  "oneOf": [
+                    {
+                      "type": "object",
+                      "properties": {
+                        "type": {
+                          "const": "core.none"
+                        }
+                      },
+                      "required": [
+                        "type"
+                      ],
+                      "additionalProperties": false
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "type": {
+                          "const": "core.home"
+                        }
+                      },
+                      "required": [
+                        "type"
+                      ],
+                      "additionalProperties": false
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "type": {
+                          "const": "core.navigate"
+                        },
+                        "pageId": {
+                          "type": "string",
+                          "format": "uuid",
+                          "pattern": "^[0-9a-f-]{36}$"
+                        }
+                      },
+                      "required": [
+                        "type",
+                        "pageId"
+                      ],
+                      "additionalProperties": false
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "type": {
+                          "const": "core.execute"
+                        },
+                        "path": {
+                          "type": "string",
+                          "maxLength": 4096,
+                          "pattern": "^/[^\\u0000]*$"
+                        },
+                        "arguments": {
+                          "type": "array",
+                          "items": {
+                            "type": "string",
+                            "maxLength": 4096,
+                            "pattern": "^[^\\u0000]*$"
+                          },
+                          "maxItems": 128
+                        },
+                        "interpreter": {
+                          "anyOf": [
+                            {
+                              "type": "null"
+                            },
+                            {
+                              "type": "object",
+                              "properties": {
+                                "path": {
+                                  "type": "string",
+                                  "maxLength": 4096,
+                                  "pattern": "^/[^\\u0000]*$"
+                                },
+                                "arguments": {
+                                  "type": "array",
+                                  "items": {
+                                    "type": "string",
+                                    "maxLength": 4096,
+                                    "pattern": "^[^\\u0000]*$"
+                                  },
+                                  "maxItems": 128
+                                }
+                              },
+                              "required": [
+                                "path",
+                                "arguments"
+                              ],
+                              "additionalProperties": false
+                            }
+                          ]
+                        },
+                        "workingDirectory": {
+                          "type": "string",
+                          "maxLength": 4096,
+                          "pattern": "^/[^\\u0000]*$"
+                        },
+                        "environment": {
+                          "type": "object",
+                          "maxProperties": 64,
+                          "propertyNames": {
+                            "pattern": "^[A-Za-z_][A-Za-z0-9_]*$"
+                          },
+                          "additionalProperties": {
+                            "type": "string",
+                            "maxLength": 8192,
+                            "pattern": "^[^\\u0000]*$"
+                          }
+                        },
+                        "mode": {
+                          "enum": [
+                            "application",
+                            "task"
+                          ]
+                        },
+                        "timeoutMs": {
+                          "anyOf": [
+                            {
+                              "type": "null"
+                            },
+                            {
+                              "type": "integer",
+                              "minimum": 1000,
+                              "maximum": 86400000
+                            }
+                          ]
+                        },
+                        "concurrency": {
+                          "enum": [
+                            "ignoreWhileRunning",
+                            "parallel"
+                          ]
+                        },
+                        "maxParallel": {
+                          "type": "integer",
+                          "minimum": 1,
+                          "maximum": 4
+                        }
+                      },
+                      "required": [
+                        "type",
+                        "path",
+                        "arguments",
+                        "interpreter",
+                        "workingDirectory",
+                        "environment",
+                        "mode",
+                        "timeoutMs",
+                        "concurrency",
+                        "maxParallel"
+                      ],
+                      "additionalProperties": false
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "type": {
+                          "const": "core.plugin.invoke"
+                        },
+                        "commandId": {
+                          "type": "string",
+                          "maxLength": 128,
+                          "pattern": "^[^\\u0000]*$"
+                        }
+                      },
+                      "required": [
+                        "type",
+                        "commandId"
+                      ],
+                      "additionalProperties": false
+                    }
+                  ]
+                },
+                "pluginBinding": {
+                  "anyOf": [
+                    {
+                      "type": "null"
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "instanceId": {
+                          "type": "string",
+                          "format": "uuid",
+                          "pattern": "^[0-9a-f-]{36}$"
+                        },
+                        "pluginId": {
+                          "type": "string",
+                          "maxLength": 128,
+                          "pattern": "^[^\\u0000]*$"
+                        },
+                        "pluginVersion": {
+                          "type": "string",
+                          "maxLength": 64,
+                          "pattern": "^[^\\u0000]*$"
+                        },
+                        "contributionId": {
+                          "type": "string",
+                          "maxLength": 128,
+                          "pattern": "^[^\\u0000]*$"
+                        },
+                        "settingsVersion": {
+                          "type": "integer",
+                          "minimum": 1
+                        },
+                        "settings": {
+                          "type": "object"
+                        },
+                        "secretRefs": {
+                          "type": "object",
+                          "additionalProperties": {
+                            "type": "string",
+                            "maxLength": 256,
+                            "pattern": "^[^\\u0000]*$"
+                          }
+                        },
+                        "refreshIntervalMs": {
+                          "type": "integer",
+                          "minimum": 1
+                        }
+                      },
+                      "required": [
+                        "instanceId",
+                        "pluginId",
+                        "pluginVersion",
+                        "contributionId",
+                        "settingsVersion",
+                        "settings",
+                        "secretRefs",
+                        "refreshIntervalMs"
+                      ],
+                      "additionalProperties": false
+                    }
+                  ]
+                },
+                "extensions": {
+                  "type": "object",
+                  "maxProperties": 64,
+                  "propertyNames": {
+                    "pattern": "^[A-Za-z0-9_-]+(?:[.:][A-Za-z0-9_-]+)+$"
+                  },
+                  "additionalProperties": {
+                    "type": "object"
+                  }
+                }
+              },
+              "required": [
+                "id",
+                "keyIndex",
+                "enabled",
+                "appearance",
+                "action",
+                "pluginBinding",
+                "extensions"
+              ],
+              "additionalProperties": false
+            }
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "parentPageId",
+          "buttons"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "extensions": {
+      "type": "object",
+      "maxProperties": 64,
+      "propertyNames": {
+        "pattern": "^[A-Za-z0-9_-]+(?:[.:][A-Za-z0-9_-]+)+$"
+      },
+      "additionalProperties": {
+        "type": "object"
+      }
+    }
+  },
+  "required": [
+    "schemaVersion",
+    "configurationId",
+    "name",
+    "target",
+    "layout",
+    "rootPageId",
+    "settings",
+    "pages",
+    "extensions"
+  ],
+  "additionalProperties": false,
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:sdl:configuration:1.0"
+}
