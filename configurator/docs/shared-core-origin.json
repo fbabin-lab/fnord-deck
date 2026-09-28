@@ -1,0 +1,20 @@
+{
+  "source": "streamdeck-controller-0.1.0.zip",
+  "package": "sdl_core",
+  "files": {
+    "py.typed": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "bundle.py": "c6481ccd1a514d5678d653f3be3ffe0f963fc228b4af3f085162d934d520b7f6",
+    "convert_worker.py": "4de37c963c17f229ae4a8959b2ef0d73552d9ba7ba2cc7a2242adf7fcb20a92d",
+    "render.py": "c5170222b8ea7e528d9fa7a4fcc5ae3969fb485cfa207c26f19e5b87e12ca867",
+    "model.py": "dd6c01d6f8d9492109c7d6491381a53aa00bb6767ba81360baab2417e10eee9d",
+    "__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "paths.py": "47c42f70ddc16b5240bb2932b893173fab52f09301231006fdff9b6cb1d4cc26",
+    "errors.py": "e292289654a396d1cbdccb476c8b35fcd044e64642779aa7e53396320a0680ba",
+    "assets.py": "50e3a80da7270a921fcde1d77ea90757bf85fc1e59e9e8ccc7eafb2709c58e58",
+    "limits.py": "7fd8747730c74c0db35e07e3917b72db3c1af8a61f6cf703160eaf273b761b96",
+    "api_contract.py": "7e66799c52e4da9461597e04871a83728ae986f716937c1b02601e2298e70a5f",
+    "jsonutil.py": "f5c534085faffaf05922efe6d54772981eefd9ca996c43cb933c92ce5752b671",
+    "contracts.py": "697f4c92d485551c34c87d0cf8a760a49f23bd57f1216b5480cd50d02f8df4ac",
+    "configuration-v1.schema.json": "730abee4b92ebc2bc5e27637ca65dcd37ff804d86301827a948b6ad0134e99a3"
+  }
+}

@@ -1,0 +1,20 @@
+[Unit]
+Description=Stream Deck Linux Controller
+Documentation=file:@DOCS@/INSTALLATION.md
+After=graphical-session-pre.target
+PartOf=graphical-session.target
+StartLimitIntervalSec=60
+StartLimitBurst=5
+
+[Service]
+Type=simple
+ExecStart="@CONTROLLER@"
+Restart=on-failure
+RestartSec=2
+KillMode=control-group
+TimeoutStopSec=8
+UMask=0077
+NoNewPrivileges=true
+
+[Install]
+WantedBy=graphical-session.target

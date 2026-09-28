@@ -1,0 +1,9 @@
+[Desktop Entry]
+Type=Application
+Name=Stream Deck Controller
+Name[fr]=Contrôleur Stream Deck
+Comment=Start the Stream Deck Controller in this graphical session
+Comment[fr]=Démarrer le contrôleur Stream Deck dans cette session graphique
+Exec="@SESSION@" --start
+Terminal=false
+X-GNOME-Autostart-enabled=true

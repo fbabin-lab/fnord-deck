@@ -1,0 +1,394 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$defs": {
+    "system.hello": {
+      "type": "object",
+      "properties": {
+        "apiMajor": {
+          "type": "integer"
+        },
+        "apiMinor": {
+          "type": "integer"
+        },
+        "clientName": {
+          "type": "string",
+          "maxLength": 128,
+          "pattern": "^[^\\u0000]*$"
+        }
+      },
+      "required": [
+        "apiMajor",
+        "apiMinor",
+        "clientName"
+      ],
+      "additionalProperties": false
+    },
+    "system.snapshot": {
+      "type": "object",
+      "properties": {},
+      "required": [],
+      "additionalProperties": false
+    },
+    "system.diagnostics": {
+      "type": "object",
+      "properties": {},
+      "required": [],
+      "additionalProperties": false
+    },
+    "events.subscribe": {
+      "type": "object",
+      "properties": {
+        "types": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "maxLength": 128,
+            "pattern": "^[^\\u0000]*$"
+          },
+          "maxItems": 64
+        }
+      },
+      "required": [],
+      "additionalProperties": false
+    },
+    "configuration.get": {
+      "type": "object",
+      "properties": {
+        "revision": {
+          "type": "integer",
+          "minimum": 0
+        }
+      },
+      "required": [],
+      "additionalProperties": false
+    },
+    "configuration.validate": {
+      "type": "object",
+      "properties": {
+        "document": {
+          "type": "object"
+        }
+      },
+      "required": [
+        "document"
+      ],
+      "additionalProperties": false
+    },
+    "configuration.review": {
+      "type": "object",
+      "properties": {
+        "document": {
+          "type": "object"
+        }
+      },
+      "required": [
+        "document"
+      ],
+      "additionalProperties": false
+    },
+    "configuration.apply": {
+      "type": "object",
+      "properties": {
+        "document": {
+          "type": "object"
+        },
+        "expectedRevision": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "operationId": {
+          "type": "string",
+          "pattern": "^[0-9a-f-]{36}$"
+        },
+        "reviewToken": {
+          "type": "string",
+          "maxLength": 256,
+          "pattern": "^[^\\u0000]*$"
+        },
+        "confirmed": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "document",
+        "expectedRevision",
+        "operationId"
+      ],
+      "additionalProperties": false
+    },
+    "configuration.history": {
+      "type": "object",
+      "properties": {
+        "cursor": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "limit": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 100
+        }
+      },
+      "required": [],
+      "additionalProperties": false
+    },
+    "asset.beginImport": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "maxLength": 256,
+          "pattern": "^[^\\u0000]*$"
+        },
+        "byteCount": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 20971520
+        },
+        "sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        }
+      },
+      "required": [
+        "name",
+        "byteCount",
+        "sha256"
+      ],
+      "additionalProperties": false
+    },
+    "asset.writeChunk": {
+      "type": "object",
+      "properties": {
+        "uploadId": {
+          "type": "string",
+          "pattern": "^[0-9a-f-]{36}$"
+        },
+        "sequence": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "data": {
+          "type": "string",
+          "maxLength": 350000,
+          "pattern": "^[^\\u0000]*$"
+        }
+      },
+      "required": [
+        "uploadId",
+        "sequence",
+        "data"
+      ],
+      "additionalProperties": false
+    },
+    "asset.finishImport": {
+      "type": "object",
+      "properties": {
+        "uploadId": {
+          "type": "string",
+          "pattern": "^[0-9a-f-]{36}$"
+        }
+      },
+      "required": [
+        "uploadId"
+      ],
+      "additionalProperties": false
+    },
+    "asset.readChunk": {
+      "type": "object",
+      "properties": {
+        "assetId": {
+          "type": "string",
+          "pattern": "^sha256:[0-9a-f]{64}$"
+        },
+        "offset": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "length": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 262144
+        }
+      },
+      "required": [
+        "assetId",
+        "offset",
+        "length"
+      ],
+      "additionalProperties": false
+    },
+    "device.list": {
+      "type": "object",
+      "properties": {},
+      "required": [],
+      "additionalProperties": false
+    },
+    "device.retry": {
+      "type": "object",
+      "properties": {
+        "deviceId": {
+          "type": "string",
+          "maxLength": 4096,
+          "pattern": "^[^\\u0000]*$"
+        }
+      },
+      "required": [],
+      "additionalProperties": false
+    },
+    "runtime.navigate": {
+      "type": "object",
+      "properties": {
+        "pageId": {
+          "type": "string",
+          "pattern": "^[0-9a-f-]{36}$"
+        },
+        "expectedRevision": {
+          "type": "integer",
+          "minimum": 0
+        }
+      },
+      "required": [
+        "pageId",
+        "expectedRevision"
+      ],
+      "additionalProperties": false
+    },
+    "runtime.pause": {
+      "type": "object",
+      "properties": {
+        "paused": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "paused"
+      ],
+      "additionalProperties": false
+    },
+    "session.update": {
+      "type": "object",
+      "properties": {
+        "variables": {
+          "type": "object",
+          "maxProperties": 32,
+          "additionalProperties": {
+            "type": "string",
+            "maxLength": 8192,
+            "pattern": "^[^\\u0000]*$"
+          }
+        }
+      },
+      "required": [
+        "variables"
+      ],
+      "additionalProperties": false
+    },
+    "execution.test": {
+      "type": "object",
+      "properties": {
+        "buttonId": {
+          "type": "string",
+          "pattern": "^[0-9a-f-]{36}$"
+        },
+        "expectedRevision": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "confirmed": {
+          "type": "boolean"
+        },
+        "operationId": {
+          "type": "string",
+          "pattern": "^[0-9a-f-]{36}$"
+        }
+      },
+      "required": [
+        "buttonId",
+        "expectedRevision",
+        "confirmed",
+        "operationId"
+      ],
+      "additionalProperties": false
+    },
+    "execution.list": {
+      "type": "object",
+      "properties": {
+        "cursor": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "limit": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 100
+        },
+        "includeOutput": {
+          "type": "boolean"
+        }
+      },
+      "required": [],
+      "additionalProperties": false
+    },
+    "execution.cancel": {
+      "type": "object",
+      "properties": {
+        "runId": {
+          "type": "string",
+          "pattern": "^[0-9a-f-]{36}$"
+        }
+      },
+      "required": [
+        "runId"
+      ],
+      "additionalProperties": false
+    },
+    "plugins.list": {
+      "type": "object",
+      "properties": {},
+      "required": [],
+      "additionalProperties": false
+    },
+    "render.preview": {
+      "type": "object",
+      "properties": {
+        "pageId": {
+          "type": "string",
+          "pattern": "^[0-9a-f-]{36}$"
+        }
+      },
+      "required": [],
+      "additionalProperties": false
+    },
+    "simulator.key": {
+      "type": "object",
+      "properties": {
+        "keyIndex": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 31
+        },
+        "down": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "keyIndex",
+        "down"
+      ],
+      "additionalProperties": false
+    },
+    "simulator.connection": {
+      "type": "object",
+      "properties": {
+        "connected": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "connected"
+      ],
+      "additionalProperties": false
+    }
+  }
+}

@@ -1,0 +1,800 @@
+{
+  "schemaVersion": "1.0",
+  "configurationId": "fe4ea6a6-ebea-4240-b924-753c9bf68cbe",
+  "name": "XL key mapping acceptance",
+  "target": {
+    "adapterId": "elgato.streamdeck",
+    "vendorId": 4057,
+    "productId": 108,
+    "serialNumber": null
+  },
+  "layout": {
+    "rows": 4,
+    "columns": 8,
+    "keyWidth": 96,
+    "keyHeight": 96
+  },
+  "rootPageId": "b2ce8e1d-caf2-4c93-8d1c-365ae2a1f228",
+  "settings": {
+    "brightnessPercent": 50,
+    "locale": "en"
+  },
+  "pages": [
+    {
+      "id": "b2ce8e1d-caf2-4c93-8d1c-365ae2a1f228",
+      "name": "Home",
+      "parentPageId": null,
+      "buttons": [
+        {
+          "id": "808b9dbd-53f7-4644-b107-87cc382cd3cf",
+          "keyIndex": 0,
+          "enabled": true,
+          "appearance": {
+            "iconAssetId": null,
+            "text": "0\nR1 C1",
+            "layout": "textOnly",
+            "backgroundColor": "#000000",
+            "textColor": "#FFFFFF",
+            "fontFamily": "DejaVu Sans",
+            "fontSizePx": 16,
+            "fontWeight": "normal",
+            "textAlign": "center",
+            "imageFit": "contain",
+            "paddingPx": 4,
+            "dynamic": null
+          },
+          "action": {
+            "type": "core.none"
+          },
+          "pluginBinding": null,
+          "extensions": {}
+        },
+        {
+          "id": "8ca14a06-cb95-459e-9238-d36b91504879",
+          "keyIndex": 1,
+          "enabled": true,
+          "appearance": {
+            "iconAssetId": null,
+            "text": "1\nR1 C2",
+            "layout": "textOnly",
+            "backgroundColor": "#000000",
+            "textColor": "#FFFFFF",
+            "fontFamily": "DejaVu Sans",
+            "fontSizePx": 16,
+            "fontWeight": "normal",
+            "textAlign": "center",
+            "imageFit": "contain",
+            "paddingPx": 4,
+            "dynamic": null
+          },
+          "action": {
+            "type": "core.none"
+          },
+          "pluginBinding": null,
+          "extensions": {}
+        },
+        {
+          "id": "7a49b1fe-fa15-4ded-b718-514272cb19d7",
+          "keyIndex": 2,
+          "enabled": true,
+          "appearance": {
+            "iconAssetId": null,
+            "text": "2\nR1 C3",
+            "layout": "textOnly",
+            "backgroundColor": "#000000",
+            "textColor": "#FFFFFF",
+            "fontFamily": "DejaVu Sans",
+            "fontSizePx": 16,
+            "fontWeight": "normal",
+            "textAlign": "center",
+            "imageFit": "contain",
+            "paddingPx": 4,
+            "dynamic": null
+          },
+          "action": {
+            "type": "core.none"
+          },
+          "pluginBinding": null,
+          "extensions": {}
+        },
+        {
+          "id": "9aa1e936-261d-41a5-a982-099dbec70587",
+          "keyIndex": 3,
+          "enabled": true,
+          "appearance": {
+            "iconAssetId": null,
+            "text": "3\nR1 C4",
+            "layout": "textOnly",
+            "backgroundColor": "#000000",
+            "textColor": "#FFFFFF",
+            "fontFamily": "DejaVu Sans",
+            "fontSizePx": 16,
+            "fontWeight": "normal",
+            "textAlign": "center",
+            "imageFit": "contain",
+            "paddingPx": 4,
+            "dynamic": null
+          },
+          "action": {
+            "type": "core.none"
+          },
+          "pluginBinding": null,
+          "extensions": {}
+        },
+        {
+          "id": "660dec95-e4a9-4e09-9f57-e041a0765722",
+          "keyIndex": 4,
+          "enabled": true,
+          "appearance": {
+            "iconAssetId": null,
+            "text": "4\nR1 C5",
+            "layout": "textOnly",
+            "backgroundColor": "#000000",
+            "textColor": "#FFFFFF",
+            "fontFamily": "DejaVu Sans",
+            "fontSizePx": 16,
+            "fontWeight": "normal",
+            "textAlign": "center",
+            "imageFit": "contain",
+            "paddingPx": 4,
+            "dynamic": null
+          },
+          "action": {
+            "type": "core.none"
+          },
+          "pluginBinding": null,
+          "extensions": {}
+        },
+        {
+          "id": "96f43dc9-c81a-4d29-8bcf-daacf8ef2fb7",
+          "keyIndex": 5,
+          "enabled": true,
+          "appearance": {
+            "iconAssetId": null,
+            "text": "5\nR1 C6",
+            "layout": "textOnly",
+            "backgroundColor": "#000000",
+            "textColor": "#FFFFFF",
+            "fontFamily": "DejaVu Sans",
+            "fontSizePx": 16,
+            "fontWeight": "normal",
+            "textAlign": "center",
+            "imageFit": "contain",
+            "paddingPx": 4,
+            "dynamic": null
+          },
+          "action": {
+            "type": "core.none"
+          },
+          "pluginBinding": null,
+          "extensions": {}
+        },
+        {
+          "id": "405f2f71-77df-4549-b786-c6c50d04f7a2",
+          "keyIndex": 6,
+          "enabled": true,
+          "appearance": {
+            "iconAssetId": null,
+            "text": "6\nR1 C7",
+            "layout": "textOnly",
+            "backgroundColor": "#000000",
+            "textColor": "#FFFFFF",
+            "fontFamily": "DejaVu Sans",
+            "fontSizePx": 16,
+            "fontWeight": "normal",
+            "textAlign": "center",
+            "imageFit": "contain",
+            "paddingPx": 4,
+            "dynamic": null
+          },
+          "action": {
+            "type": "core.none"
+          },
+          "pluginBinding": null,
+          "extensions": {}
+        },
+        {
+          "id": "e08ab1cd-618e-44b1-adc8-9fa4a1dd8cf8",
+          "keyIndex": 7,
+          "enabled": true,
+          "appearance": {
+            "iconAssetId": null,
+            "text": "7\nR1 C8",
+            "layout": "textOnly",
+            "backgroundColor": "#000000",
+            "textColor": "#FFFFFF",
+            "fontFamily": "DejaVu Sans",
+            "fontSizePx": 16,
+            "fontWeight": "normal",
+            "textAlign": "center",
+            "imageFit": "contain",
+            "paddingPx": 4,
+            "dynamic": null
+          },
+          "action": {
+            "type": "core.none"
+          },
+          "pluginBinding": null,
+          "extensions": {}
+        },
+        {
+          "id": "6d9ee502-2f44-4dbc-8036-c994f231abdc",
+          "keyIndex": 8,
+          "enabled": true,
+          "appearance": {
+            "iconAssetId": null,
+            "text": "8\nR2 C1",
+            "layout": "textOnly",
+            "backgroundColor": "#000000",
+            "textColor": "#FFFFFF",
+            "fontFamily": "DejaVu Sans",
+            "fontSizePx": 16,
+            "fontWeight": "normal",
+            "textAlign": "center",
+            "imageFit": "contain",
+            "paddingPx": 4,
+            "dynamic": null
+          },
+          "action": {
+            "type": "core.none"
+          },
+          "pluginBinding": null,
+          "extensions": {}
+        },
+        {
+          "id": "3dc93107-119a-470a-b0f5-1d83ddacd11c",
+          "keyIndex": 9,
+          "enabled": true,
+          "appearance": {
+            "iconAssetId": null,
+            "text": "9\nR2 C2",
+            "layout": "textOnly",
+            "backgroundColor": "#000000",
+            "textColor": "#FFFFFF",
+            "fontFamily": "DejaVu Sans",
+            "fontSizePx": 16,
+            "fontWeight": "normal",
+            "textAlign": "center",
+            "imageFit": "contain",
+            "paddingPx": 4,
+            "dynamic": null
+          },
+          "action": {
+            "type": "core.none"
+          },
+          "pluginBinding": null,
+          "extensions": {}
+        },
+        {
+          "id": "aee070b9-1bda-4d0e-a3e2-f19371c9a7be",
+          "keyIndex": 10,
+          "enabled": true,
+          "appearance": {
+            "iconAssetId": null,
+            "text": "10\nR2 C3",
+            "layout": "textOnly",
+            "backgroundColor": "#000000",
+            "textColor": "#FFFFFF",
+            "fontFamily": "DejaVu Sans",
+            "fontSizePx": 16,
+            "fontWeight": "normal",
+            "textAlign": "center",
+            "imageFit": "contain",
+            "paddingPx": 4,
+            "dynamic": null
+          },
+          "action": {
+            "type": "core.none"
+          },
+          "pluginBinding": null,
+          "extensions": {}
+        },
+        {
+          "id": "fe2ca1e7-e4c4-4141-948d-072c5888d6b8",
+          "keyIndex": 11,
+          "enabled": true,
+          "appearance": {
+            "iconAssetId": null,
+            "text": "11\nR2 C4",
+            "layout": "textOnly",
+            "backgroundColor": "#000000",
+            "textColor": "#FFFFFF",
+            "fontFamily": "DejaVu Sans",
+            "fontSizePx": 16,
+            "fontWeight": "normal",
+            "textAlign": "center",
+            "imageFit": "contain",
+            "paddingPx": 4,
+            "dynamic": null
+          },
+          "action": {
+            "type": "core.none"
+          },
+          "pluginBinding": null,
+          "extensions": {}
+        },
+        {
+          "id": "6ceae6f1-71f2-4071-87fc-a1cb2e7ab3fd",
+          "keyIndex": 12,
+          "enabled": true,
+          "appearance": {
+            "iconAssetId": null,
+            "text": "12\nR2 C5",
+            "layout": "textOnly",
+            "backgroundColor": "#000000",
+            "textColor": "#FFFFFF",
+            "fontFamily": "DejaVu Sans",
+            "fontSizePx": 16,
+            "fontWeight": "normal",
+            "textAlign": "center",
+            "imageFit": "contain",
+            "paddingPx": 4,
+            "dynamic": null
+          },
+          "action": {
+            "type": "core.none"
+          },
+          "pluginBinding": null,
+          "extensions": {}
+        },
+        {
+          "id": "3ad6de5c-5b8e-44da-bdaf-433d1438b02c",
+          "keyIndex": 13,
+          "enabled": true,
+          "appearance": {
+            "iconAssetId": null,
+            "text": "13\nR2 C6",
+            "layout": "textOnly",
+            "backgroundColor": "#000000",
+            "textColor": "#FFFFFF",
+            "fontFamily": "DejaVu Sans",
+            "fontSizePx": 16,
+            "fontWeight": "normal",
+            "textAlign": "center",
+            "imageFit": "contain",
+            "paddingPx": 4,
+            "dynamic": null
+          },
+          "action": {
+            "type": "core.none"
+          },
+          "pluginBinding": null,
+          "extensions": {}
+        },
+        {
+          "id": "01fe0544-02ed-41a8-b903-312583c86420",
+          "keyIndex": 14,
+          "enabled": true,
+          "appearance": {
+            "iconAssetId": null,
+            "text": "14\nR2 C7",
+            "layout": "textOnly",
+            "backgroundColor": "#000000",
+            "textColor": "#FFFFFF",
+            "fontFamily": "DejaVu Sans",
+            "fontSizePx": 16,
+            "fontWeight": "normal",
+            "textAlign": "center",
+            "imageFit": "contain",
+            "paddingPx": 4,
+            "dynamic": null
+          },
+          "action": {
+            "type": "core.none"
+          },
+          "pluginBinding": null,
+          "extensions": {}
+        },
+        {
+          "id": "68a21941-b731-4a11-a1f6-cc11a26534f6",
+          "keyIndex": 15,
+          "enabled": true,
+          "appearance": {
+            "iconAssetId": null,
+            "text": "15\nR2 C8",
+            "layout": "textOnly",
+            "backgroundColor": "#000000",
+            "textColor": "#FFFFFF",
+            "fontFamily": "DejaVu Sans",
+            "fontSizePx": 16,
+            "fontWeight": "normal",
+            "textAlign": "center",
+            "imageFit": "contain",
+            "paddingPx": 4,
+            "dynamic": null
+          },
+          "action": {
+            "type": "core.none"
+          },
+          "pluginBinding": null,
+          "extensions": {}
+        },
+        {
+          "id": "40602d98-8b68-4df3-b723-4f97766d2c93",
+          "keyIndex": 16,
+          "enabled": true,
+          "appearance": {
+            "iconAssetId": null,
+            "text": "16\nR3 C1",
+            "layout": "textOnly",
+            "backgroundColor": "#000000",
+            "textColor": "#FFFFFF",
+            "fontFamily": "DejaVu Sans",
+            "fontSizePx": 16,
+            "fontWeight": "normal",
+            "textAlign": "center",
+            "imageFit": "contain",
+            "paddingPx": 4,
+            "dynamic": null
+          },
+          "action": {
+            "type": "core.none"
+          },
+          "pluginBinding": null,
+          "extensions": {}
+        },
+        {
+          "id": "c5c26f98-21bc-44fb-9a37-d651ac6adc95",
+          "keyIndex": 17,
+          "enabled": true,
+          "appearance": {
+            "iconAssetId": null,
+            "text": "17\nR3 C2",
+            "layout": "textOnly",
+            "backgroundColor": "#000000",
+            "textColor": "#FFFFFF",
+            "fontFamily": "DejaVu Sans",
+            "fontSizePx": 16,
+            "fontWeight": "normal",
+            "textAlign": "center",
+            "imageFit": "contain",
+            "paddingPx": 4,
+            "dynamic": null
+          },
+          "action": {
+            "type": "core.none"
+          },
+          "pluginBinding": null,
+          "extensions": {}
+        },
+        {
+          "id": "ebb752ed-bf29-4bc8-8d23-1c8adc196dbb",
+          "keyIndex": 18,
+          "enabled": true,
+          "appearance": {
+            "iconAssetId": null,
+            "text": "18\nR3 C3",
+            "layout": "textOnly",
+            "backgroundColor": "#000000",
+            "textColor": "#FFFFFF",
+            "fontFamily": "DejaVu Sans",
+            "fontSizePx": 16,
+            "fontWeight": "normal",
+            "textAlign": "center",
+            "imageFit": "contain",
+            "paddingPx": 4,
+            "dynamic": null
+          },
+          "action": {
+            "type": "core.none"
+          },
+          "pluginBinding": null,
+          "extensions": {}
+        },
+        {
+          "id": "ca215d66-1fd7-4f52-9d7f-4b3d68e238db",
+          "keyIndex": 19,
+          "enabled": true,
+          "appearance": {
+            "iconAssetId": null,
+            "text": "19\nR3 C4",
+            "layout": "textOnly",
+            "backgroundColor": "#000000",
+            "textColor": "#FFFFFF",
+            "fontFamily": "DejaVu Sans",
+            "fontSizePx": 16,
+            "fontWeight": "normal",
+            "textAlign": "center",
+            "imageFit": "contain",
+            "paddingPx": 4,
+            "dynamic": null
+          },
+          "action": {
+            "type": "core.none"
+          },
+          "pluginBinding": null,
+          "extensions": {}
+        },
+        {
+          "id": "c9427129-e5aa-4e97-ad88-46fa07899f00",
+          "keyIndex": 20,
+          "enabled": true,
+          "appearance": {
+            "iconAssetId": null,
+            "text": "20\nR3 C5",
+            "layout": "textOnly",
+            "backgroundColor": "#000000",
+            "textColor": "#FFFFFF",
+            "fontFamily": "DejaVu Sans",
+            "fontSizePx": 16,
+            "fontWeight": "normal",
+            "textAlign": "center",
+            "imageFit": "contain",
+            "paddingPx": 4,
+            "dynamic": null
+          },
+          "action": {
+            "type": "core.none"
+          },
+          "pluginBinding": null,
+          "extensions": {}
+        },
+        {
+          "id": "daa6947f-5a61-4d56-a6e4-47a3bdf3159a",
+          "keyIndex": 21,
+          "enabled": true,
+          "appearance": {
+            "iconAssetId": null,
+            "text": "21\nR3 C6",
+            "layout": "textOnly",
+            "backgroundColor": "#000000",
+            "textColor": "#FFFFFF",
+            "fontFamily": "DejaVu Sans",
+            "fontSizePx": 16,
+            "fontWeight": "normal",
+            "textAlign": "center",
+            "imageFit": "contain",
+            "paddingPx": 4,
+            "dynamic": null
+          },
+          "action": {
+            "type": "core.none"
+          },
+          "pluginBinding": null,
+          "extensions": {}
+        },
+        {
+          "id": "eb641b5b-43f7-4cbb-a127-e3021c08c8e3",
+          "keyIndex": 22,
+          "enabled": true,
+          "appearance": {
+            "iconAssetId": null,
+            "text": "22\nR3 C7",
+            "layout": "textOnly",
+            "backgroundColor": "#000000",
+            "textColor": "#FFFFFF",
+            "fontFamily": "DejaVu Sans",
+            "fontSizePx": 16,
+            "fontWeight": "normal",
+            "textAlign": "center",
+            "imageFit": "contain",
+            "paddingPx": 4,
+            "dynamic": null
+          },
+          "action": {
+            "type": "core.none"
+          },
+          "pluginBinding": null,
+          "extensions": {}
+        },
+        {
+          "id": "b009163e-a7cc-417c-8188-4efff354a65f",
+          "keyIndex": 23,
+          "enabled": true,
+          "appearance": {
+            "iconAssetId": null,
+            "text": "23\nR3 C8",
+            "layout": "textOnly",
+            "backgroundColor": "#000000",
+            "textColor": "#FFFFFF",
+            "fontFamily": "DejaVu Sans",
+            "fontSizePx": 16,
+            "fontWeight": "normal",
+            "textAlign": "center",
+            "imageFit": "contain",
+            "paddingPx": 4,
+            "dynamic": null
+          },
+          "action": {
+            "type": "core.none"
+          },
+          "pluginBinding": null,
+          "extensions": {}
+        },
+        {
+          "id": "beb1b4c6-7766-4430-b512-99823f330ddf",
+          "keyIndex": 24,
+          "enabled": true,
+          "appearance": {
+            "iconAssetId": null,
+            "text": "24\nR4 C1",
+            "layout": "textOnly",
+            "backgroundColor": "#000000",
+            "textColor": "#FFFFFF",
+            "fontFamily": "DejaVu Sans",
+            "fontSizePx": 16,
+            "fontWeight": "normal",
+            "textAlign": "center",
+            "imageFit": "contain",
+            "paddingPx": 4,
+            "dynamic": null
+          },
+          "action": {
+            "type": "core.none"
+          },
+          "pluginBinding": null,
+          "extensions": {}
+        },
+        {
+          "id": "0f5843a2-fad7-4763-a5cc-792e5520bdfb",
+          "keyIndex": 25,
+          "enabled": true,
+          "appearance": {
+            "iconAssetId": null,
+            "text": "25\nR4 C2",
+            "layout": "textOnly",
+            "backgroundColor": "#000000",
+            "textColor": "#FFFFFF",
+            "fontFamily": "DejaVu Sans",
+            "fontSizePx": 16,
+            "fontWeight": "normal",
+            "textAlign": "center",
+            "imageFit": "contain",
+            "paddingPx": 4,
+            "dynamic": null
+          },
+          "action": {
+            "type": "core.none"
+          },
+          "pluginBinding": null,
+          "extensions": {}
+        },
+        {
+          "id": "972892b4-9057-4def-972b-85d45bd33ab5",
+          "keyIndex": 26,
+          "enabled": true,
+          "appearance": {
+            "iconAssetId": null,
+            "text": "26\nR4 C3",
+            "layout": "textOnly",
+            "backgroundColor": "#000000",
+            "textColor": "#FFFFFF",
+            "fontFamily": "DejaVu Sans",
+            "fontSizePx": 16,
+            "fontWeight": "normal",
+            "textAlign": "center",
+            "imageFit": "contain",
+            "paddingPx": 4,
+            "dynamic": null
+          },
+          "action": {
+            "type": "core.none"
+          },
+          "pluginBinding": null,
+          "extensions": {}
+        },
+        {
+          "id": "e4df05f8-46e2-4869-91d6-e897a9bc631e",
+          "keyIndex": 27,
+          "enabled": true,
+          "appearance": {
+            "iconAssetId": null,
+            "text": "27\nR4 C4",
+            "layout": "textOnly",
+            "backgroundColor": "#000000",
+            "textColor": "#FFFFFF",
+            "fontFamily": "DejaVu Sans",
+            "fontSizePx": 16,
+            "fontWeight": "normal",
+            "textAlign": "center",
+            "imageFit": "contain",
+            "paddingPx": 4,
+            "dynamic": null
+          },
+          "action": {
+            "type": "core.none"
+          },
+          "pluginBinding": null,
+          "extensions": {}
+        },
+        {
+          "id": "ed87e3cc-cba0-4c80-9128-86d318e321f7",
+          "keyIndex": 28,
+          "enabled": true,
+          "appearance": {
+            "iconAssetId": null,
+            "text": "28\nR4 C5",
+            "layout": "textOnly",
+            "backgroundColor": "#000000",
+            "textColor": "#FFFFFF",
+            "fontFamily": "DejaVu Sans",
+            "fontSizePx": 16,
+            "fontWeight": "normal",
+            "textAlign": "center",
+            "imageFit": "contain",
+            "paddingPx": 4,
+            "dynamic": null
+          },
+          "action": {
+            "type": "core.none"
+          },
+          "pluginBinding": null,
+          "extensions": {}
+        },
+        {
+          "id": "b635bffc-e11a-45e4-87dd-cfc242952b2b",
+          "keyIndex": 29,
+          "enabled": true,
+          "appearance": {
+            "iconAssetId": null,
+            "text": "29\nR4 C6",
+            "layout": "textOnly",
+            "backgroundColor": "#000000",
+            "textColor": "#FFFFFF",
+            "fontFamily": "DejaVu Sans",
+            "fontSizePx": 16,
+            "fontWeight": "normal",
+            "textAlign": "center",
+            "imageFit": "contain",
+            "paddingPx": 4,
+            "dynamic": null
+          },
+          "action": {
+            "type": "core.none"
+          },
+          "pluginBinding": null,
+          "extensions": {}
+        },
+        {
+          "id": "17b6a026-f874-4fbc-9ef1-410d5be4d071",
+          "keyIndex": 30,
+          "enabled": true,
+          "appearance": {
+            "iconAssetId": null,
+            "text": "30\nR4 C7",
+            "layout": "textOnly",
+            "backgroundColor": "#000000",
+            "textColor": "#FFFFFF",
+            "fontFamily": "DejaVu Sans",
+            "fontSizePx": 16,
+            "fontWeight": "normal",
+            "textAlign": "center",
+            "imageFit": "contain",
+            "paddingPx": 4,
+            "dynamic": null
+          },
+          "action": {
+            "type": "core.none"
+          },
+          "pluginBinding": null,
+          "extensions": {}
+        },
+        {
+          "id": "07a015e2-8808-47b1-bd72-79f3fd55e0ac",
+          "keyIndex": 31,
+          "enabled": true,
+          "appearance": {
+            "iconAssetId": null,
+            "text": "31\nR4 C8",
+            "layout": "textOnly",
+            "backgroundColor": "#000000",
+            "textColor": "#FFFFFF",
+            "fontFamily": "DejaVu Sans",
+            "fontSizePx": 16,
+            "fontWeight": "normal",
+            "textAlign": "center",
+            "imageFit": "contain",
+            "paddingPx": 4,
+            "dynamic": null
+          },
+          "action": {
+            "type": "core.none"
+          },
+          "pluginBinding": null,
+          "extensions": {}
+        }
+      ]
+    }
+  ],
+  "extensions": {}
+}
