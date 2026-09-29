@@ -10,8 +10,12 @@ from sdl_configurator.i18n import Messages
 def test_check_runs_without_gui_or_controller(capsys,tmp_path):
     assert main(['--check','--workspace',str(tmp_path/'workspace')]) == 0
     result=json.loads(capsys.readouterr().out)
-    assert result['version']=='0.1.0'
-    assert result['usbOwnership'] is False and result['plugins']=='deferred'
+    assert result['version']=='0.2.0'
+    assert result['usbOwnership'] is False
+    assert result['plugins'] == 'controller-managed-polling-display'
+    assert result['pluginApiVersion'] == '1.1'
+    assert result['pluginExecutionHere'] is False
+    assert result['controllerCapabilitiesChecked'] is False
     assert result['fontAvailable']
     assert not (tmp_path/'workspace').exists()  # diagnostics are read-only
 

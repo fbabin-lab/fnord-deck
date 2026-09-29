@@ -36,4 +36,4 @@ for path in source.glob('*.py'):
             if node.args and isinstance(node.args[0], ast.Constant) and isinstance(node.args[0].value, str):
                 assert node.args[0].value in catalogs['en'], (path.name, node.args[0].value)
 assert not list(ROOT.rglob('*.ttf')) and not list(ROOT.rglob('*.otf')), 'Do not ship fonts.'
-print(f'PASS: Python 3.12 grammar, editor execution/USB boundaries, unchanged shared core, {len(catalogs["en"])} EN/FR messages, no bundled fonts.')
+print(f'PASS: Python 3.12 grammar, editor execution/USB boundaries, versioned shared-core provenance, {len(catalogs["en"])} EN/FR messages, no bundled fonts.')

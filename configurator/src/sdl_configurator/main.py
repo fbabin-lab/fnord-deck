@@ -46,7 +46,9 @@ def main(argv: list[str] | None = None) -> int:
                               **qt,
                               "fontAvailable": font_path().is_file(), "socket": str(paths.socket),
                               "editorData": str(paths.data), "editorState": str(paths.state),
-                              "plugins": "deferred", "usbOwnership": False}, indent=2))
+                              "plugins": "controller-managed-polling-display",
+                              "pluginApiVersion": "1.1", "pluginExecutionHere": False,
+                              "controllerCapabilitiesChecked": False, "usbOwnership": False}, indent=2))
             return 0
         if os.getuid() == 0:
             raise SdlError("ROOT_NOT_ALLOWED", "Run the Configurator as your normal desktop user, not with sudo.")

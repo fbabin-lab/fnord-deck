@@ -1,0 +1,11 @@
+[Unit]
+Description=Aggregate resource ceiling for Stream Deck plugins
+
+[Slice]
+CPUAccounting=yes
+MemoryAccounting=yes
+TasksAccounting=yes
+CPUQuota=15%
+MemoryHigh=384M
+MemoryMax=512M
+TasksMax=64

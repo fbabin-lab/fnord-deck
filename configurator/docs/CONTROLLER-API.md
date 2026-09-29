@@ -1,4 +1,6 @@
-# Local API 1.0
+> Version 0.2.0 adds approved polling/display plugins and API 1.1. The [current plugin guide](../../docs/PLUGIN-HOST-0.2.0.md) supersedes earlier plugin-deferred statements below. Run both this document's baseline acceptance checks and the plugin guide's additional checks.
+
+# Local API 1.1
 
 Socket: `$XDG_RUNTIME_DIR/streamdeck-linux/controller.sock`; simulator substitutes `streamdeck-linux-simulator`. Directory `0700`, socket `0600`, peer UID checked with Linux `SO_PEERCRED` on both client and server. No TCP listener.
 
@@ -10,7 +12,7 @@ First request:
 {"jsonrpc":"2.0","id":"1","method":"system.hello","params":{"apiMajor":1,"apiMinor":0,"clientName":"my-configurator"}}
 ```
 
-Major version mismatch blocks API use. Hello reports current capabilities, including `plugins:false` and `secrets:false`. The JSON parameter contracts are exported in `schemas/local-api-parameters-v1.json`; the complete configuration schema is separate. Envelope/result structures are supplied in `schemas/local-api-envelopes-v1.json`. `src/sdl_cli/client.py` is a working reference client.
+Major version mismatch blocks API use. Hello reports current capabilities, including `plugins:true`, polling/display capabilities and `secrets:false`; live simulator demand additionally requires `--allow-plugins`. The JSON parameter contracts are exported in `schemas/local-api-parameters-v1.json`; the complete configuration schema is separate. Envelope/result structures are supplied in `schemas/local-api-envelopes-v1.json`. `src/sdl_cli/client.py` is a working reference client.
 
 ## Supported methods
 
@@ -37,12 +39,17 @@ Major version mismatch blocks API use. Hello reports current capabilities, inclu
 | `execution.test` | Applied `buttonId`, `expectedRevision`, `confirmed:true`, `operationId`; run ID/state |
 | `execution.list` | `cursor`, `limit`, optional `includeOutput:false`; bounded summaries or explicit live output |
 | `execution.cancel` | `runId`; task cancellation; independent applications unsupported |
-| `plugins.list` | Honest deferred/unavailable capability status |
+| `plugins.list` | Cached package metadata, approvals, workers, instances and enforced-resource diagnostics; no launch |
+| `plugins.rescan` | Explicit data-only package rescan |
+| `plugins.approve` | Explicit confirmation of the exact package fingerprint and interpreter identity |
+| `plugins.setEnabled` | Enable a still-approved package or revoke demand by disabling it |
+| `plugins.restart` | Clear quarantine/retry state; does not create hidden demand |
+| `runtime.blank` | Explicit display blanking; revokes plugin demand |
 | `render.preview` | Optional applied `pageId`; base64 upright PNG grid, page/revision; no execution |
 | `simulator.key` | `keyIndex`, `down`; simulation only |
 | `simulator.connection` | `connected`; simulation only |
 
-All remaining `plugins.*`/`secret.*` operations return `FEATURE_DEFERRED`. Unknown methods return `METHOD_NOT_FOUND`. Synthetic input is never exposed on the physical Controller. Device/brightness changes go through a new configuration Apply, not a hidden second store.
+Secret operations remain `FEATURE_DEFERRED`; push and plugin command execution are not supported. Unknown plugin methods return `METHOD_NOT_FOUND`. Unknown methods return `METHOD_NOT_FOUND`. Synthetic input is never exposed on the physical Controller. Device/brightness changes go through a new configuration Apply, not a hidden second store.
 
 ## Apply and concurrency
 

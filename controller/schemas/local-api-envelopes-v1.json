@@ -672,24 +672,34 @@
     },
     "Result_plugins.list": {
       "type": "object",
-      "properties": {
-        "supported": {
-          "const": false
-        },
-        "reason": {
-          "type": "string"
-        },
-        "instances": {
-          "type": "array",
-          "maxItems": 0
-        }
-      },
       "required": [
         "supported",
-        "reason",
-        "instances"
+        "apiVersion",
+        "packages",
+        "workers",
+        "instances",
+        "allowed"
       ],
-      "additionalProperties": true
+      "properties": {
+        "supported": {
+          "const": true
+        },
+        "apiVersion": {
+          "const": "1.1"
+        },
+        "packages": {
+          "type": "array"
+        },
+        "workers": {
+          "type": "array"
+        },
+        "instances": {
+          "type": "array"
+        },
+        "allowed": {
+          "type": "boolean"
+        }
+      }
     },
     "Result_render.preview": {
       "type": "object",
@@ -739,6 +749,141 @@
         "ok"
       ],
       "additionalProperties": true
+    },
+    "Result_plugins.rescan": {
+      "type": "object",
+      "required": [
+        "supported",
+        "apiVersion",
+        "packages",
+        "workers",
+        "instances",
+        "allowed"
+      ],
+      "properties": {
+        "supported": {
+          "const": true
+        },
+        "apiVersion": {
+          "const": "1.1"
+        },
+        "packages": {
+          "type": "array"
+        },
+        "workers": {
+          "type": "array"
+        },
+        "instances": {
+          "type": "array"
+        },
+        "allowed": {
+          "type": "boolean"
+        }
+      }
+    },
+    "Result_plugins.approve": {
+      "type": "object",
+      "required": [
+        "supported",
+        "apiVersion",
+        "packages",
+        "workers",
+        "instances",
+        "allowed"
+      ],
+      "properties": {
+        "supported": {
+          "const": true
+        },
+        "apiVersion": {
+          "const": "1.1"
+        },
+        "packages": {
+          "type": "array"
+        },
+        "workers": {
+          "type": "array"
+        },
+        "instances": {
+          "type": "array"
+        },
+        "allowed": {
+          "type": "boolean"
+        }
+      }
+    },
+    "Result_plugins.setEnabled": {
+      "type": "object",
+      "required": [
+        "supported",
+        "apiVersion",
+        "packages",
+        "workers",
+        "instances",
+        "allowed"
+      ],
+      "properties": {
+        "supported": {
+          "const": true
+        },
+        "apiVersion": {
+          "const": "1.1"
+        },
+        "packages": {
+          "type": "array"
+        },
+        "workers": {
+          "type": "array"
+        },
+        "instances": {
+          "type": "array"
+        },
+        "allowed": {
+          "type": "boolean"
+        }
+      }
+    },
+    "Result_plugins.restart": {
+      "type": "object",
+      "required": [
+        "supported",
+        "apiVersion",
+        "packages",
+        "workers",
+        "instances",
+        "allowed"
+      ],
+      "properties": {
+        "supported": {
+          "const": true
+        },
+        "apiVersion": {
+          "const": "1.1"
+        },
+        "packages": {
+          "type": "array"
+        },
+        "workers": {
+          "type": "array"
+        },
+        "instances": {
+          "type": "array"
+        },
+        "allowed": {
+          "type": "boolean"
+        }
+      }
+    },
+    "Result_runtime.blank": {
+      "type": "object",
+      "required": [
+        "blanked"
+      ],
+      "properties": {
+        "blanked": {
+          "type": "boolean"
+        }
+      }
     }
   },
   "x-methodResults": {
@@ -816,6 +961,21 @@
     },
     "simulator.connection": {
       "$ref": "#/$defs/Result_simulator.connection"
+    },
+    "plugins.rescan": {
+      "$ref": "#/$defs/Result_plugins.rescan"
+    },
+    "plugins.approve": {
+      "$ref": "#/$defs/Result_plugins.approve"
+    },
+    "plugins.setEnabled": {
+      "$ref": "#/$defs/Result_plugins.setEnabled"
+    },
+    "plugins.restart": {
+      "$ref": "#/$defs/Result_plugins.restart"
+    },
+    "runtime.blank": {
+      "$ref": "#/$defs/Result_runtime.blank"
     }
   }
 }

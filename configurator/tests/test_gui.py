@@ -178,3 +178,34 @@ def test_french_catalog_controls_and_back(app, workspace, monkeypatch):
     finally:
         window.render_timer.stop(); window.autosave_timer.stop(); window.poll_timer.stop()
         window._closing=True; window.shutdown(); window._allow_close=True; window.close()
+
+
+def test_plugin_dialog_has_independent_settings_and_never_runs(app, window):
+    import json
+    from sdl_configurator.plugin_dialogs import PluginBindingDialog
+    root = Path(__file__).resolve().parents[2]
+    manifest = json.loads((root/'plugins/cpu/manifest.json').read_text())
+    catalog={'packages':[{'pluginId':manifest['id'],'pluginVersion':manifest['version'],'approved':False,'manifest':manifest}]}
+    dialog=PluginBindingDialog(window,Messages('fr'),catalog)
+    dialog.choice.setCurrentIndex(1)
+    dialog.form.fields['label'][0].setText('Processeur')
+    dialog.accept()
+    assert dialog.result_binding['settings']['label'] == 'Processeur'
+    assert dialog.result_binding['refreshIntervalMs'] == 2000
+    assert dialog.result_dynamic['enabled']
+    assert not window.draft.document['pages'][0]['buttons']
+    assert window.snapshot is None
+
+
+def test_plugin_missing_binding_preserved_without_loading_package(app,window):
+    from sdl_configurator.plugin_dialogs import PluginBindingDialog
+    from sdl_core.model import button
+    from sdl_core.dynamic import DEFAULT_DYNAMIC
+    from uuid import uuid4
+    item=button(0,'Fallback')
+    item['pluginBinding']={'instanceId':str(uuid4()),'pluginId':'org.example.missing','pluginVersion':'1.0.0','contributionId':'value','settingsVersion':1,'settings':{},'secretRefs':{},'refreshIntervalMs':2000}
+    item['appearance']['dynamic']=copy.deepcopy(DEFAULT_DYNAMIC)
+    dialog=PluginBindingDialog(window,Messages('en'),{'packages':[]},item,offline=True)
+    dialog.accept()
+    assert dialog.result_binding == item['pluginBinding']
+    assert dialog.result_dynamic == item['appearance']['dynamic']

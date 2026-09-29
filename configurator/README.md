@@ -1,19 +1,18 @@
-# Stream Deck Linux Configurator 0.1.0
+# Stream Deck Linux Configurator 0.2.0
 
-A separate desktop application for configuring the **Elgato Stream Deck XL 20GAT9901** on **Ubuntu 24.04**. Compatible with the supplied **Stream Deck Linux Controller 0.1.0 / API 1.0**.
+A separate desktop application for configuring the **Elgato Stream Deck XL 20GAT9901** on **Ubuntu 24.04**. Compatible with the supplied **Stream Deck Linux Controller 0.2.0 / API 1.1**.
 
 The Configurator edits local drafts and talks to the Controller over a same-user Unix socket. **It never opens USB devices, starts/stops the Controller, or directly executes button commands.** Closing it leaves the Controller running.
 
-**Verification status:** 74 automated non-Qt tests passed, including eight integration tests against the unchanged Controller running as a separate simulator process. The Qt desktop tests are included but were **not run** in the build environment because PySide6 was unavailable and dependency download failed. Ubuntu installation, actual desktop behavior, and physical Stream Deck operation still require local acceptance. See [Verification](docs/VERIFICATION.md) and [Desktop acceptance](docs/DESKTOP-ACCEPTANCE.md). This is a first implementation, not a hardware-certified release.
+**Current release:** [plugin host guide](../docs/PLUGIN-HOST-0.2.0.md) and [verification](../docs/VERIFICATION-0.2.0.md). The older report under `docs/VERIFICATION.md` is historical. Native plugin workers belong exclusively to the Controller; the editor provides package review, per-button settings, offline cached metadata and draft-only previews.
 
 ## Install on Ubuntu
 
-Keep the previously installed Controller; no Controller update is required. Extract this archive and run the installer **as your normal desktop user, without sudo**:
+Update **both** applications to 0.2.0 for plugin support. From the repository root, run the installer **as your normal desktop user, without sudo**:
 
 ```bash
-unzip streamdeck-configurator-0.1.0.zip
-cd streamdeck-configurator-0.1.0
-./scripts/install-ubuntu.sh
+./controller/scripts/install-ubuntu.sh
+./configurator/scripts/install-ubuntu.sh
 export PATH="$HOME/.local/bin:$PATH"
 sdl-configurator
 ```
@@ -125,10 +124,10 @@ python -m pip install -r requirements-dev.lock
 ./scripts/test.sh -q
 ```
 
-Qt tests run offscreen by default. Integration tests locate the sibling `streamdeck-controller-0.1.0` source directory, or use:
+Qt tests run offscreen by default. Integration tests locate the sibling `controller/` source directory, or use:
 
 ```bash
-export SDL_CONTROLLER_SOURCE=/absolute/path/to/streamdeck-controller-0.1.0
+export SDL_CONTROLLER_SOURCE=/absolute/path/to/fnord-deck/controller
 ./scripts/test.sh -q
 ```
 
@@ -150,7 +149,7 @@ Drafts, imported images, and the Controller are retained. Close the Configurator
 
 ## Scope and documentation
 
-Plugins, dashboards, animated plugin displays, multi-device editing, automatic executable discovery, a system tray, and automatic update delivery are not part of this release. The visual grid targets XL only; the shared core/backend boundary allows a later model-specific grid without changing the API transport.
+Polling/display plugins are supported through Controller 0.2.0. Push/animation, plugin button commands, secret provisioning, dashboards, multi-device editing, automatic executable discovery, a system tray, and automatic update delivery remain outside this release. The visual grid targets XL only; the shared core/backend boundary allows a later model-specific grid without changing the API transport.
 
 The recent-execution viewer is a bounded, read-only JSON detail view with a task-cancel control, not a full searchable log browser. Technical validation/Controller diagnostics retain their original language. Fonts come from system packages; none are bundled.
 

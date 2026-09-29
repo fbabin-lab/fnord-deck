@@ -65,12 +65,16 @@ def escaped(path):
 unit = (root/'packaging/systemd-user/sdl-controller.service.in').read_text()
 unit = unit.replace('@CONTROLLER@', escaped(prefix/'venv/bin/sdl-controller')).replace('@DOCS@', escaped(prefix/'docs'))
 (config/'systemd/user/sdl-controller.service').write_text(unit)
+(config/'systemd/user/app-sdlplugins.slice').write_text((root/'packaging/systemd-user/app-sdlplugins.slice').read_text())
 if os.environ['AUTOSTART'] == '1':
     directory = config/'autostart'
     directory.mkdir(parents=True, exist_ok=True)
     desktop = (root/'packaging/desktop/sdl-session.desktop.in').read_text()
     (directory/'sdl-session.desktop').write_text(desktop.replace('@SESSION@', escaped(prefix/'venv/bin/sdl-session')))
 PY
+if [[ -d "$ROOT/../plugins/cpu" ]]; then
+  "$PREFIX/venv/bin/python" -m sdl_controller.plugins.install "$ROOT/../plugins/cpu"
+fi
 if systemctl --user daemon-reload 2>/dev/null; then
   if [[ "$RESTART" -eq 1 || ( "$AUTOSTART" -eq 1 && ( -n "${DISPLAY:-}" || -n "${WAYLAND_DISPLAY:-}" ) ) ]]; then
     "$PREFIX/venv/bin/sdl-session" --start
@@ -85,3 +89,5 @@ printf 'Start with: sdl-session --start\nCheck with: sdlctl status\n'
 if [[ "$AUTOSTART" -eq 0 ]]; then
   echo 'Automatic login startup was not enabled. Re-run with --autostart to opt in.'
 fi
+
+printf 'Plugin files are installed without approval. Review them in Configurator → Plugins, or run sdlctl plugins.\n'

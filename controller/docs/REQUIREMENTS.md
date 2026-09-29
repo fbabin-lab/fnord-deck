@@ -1,3 +1,5 @@
+> Historical baseline record. For the implemented 0.2.0 plugin release, see the repository root `docs/PLUGIN-HOST-0.2.0.md` and `docs/VERIFICATION-0.2.0.md`. Earlier plugin exclusions and test counts below describe the earlier milestone.
+
 # Version 0.1.0 scope and traceability
 
 Authority: the user's follow-up request to implement **only the Controller**, on Ubuntu 24, with plugins deferred. The original v1.0 two-application specification is retained in `original-spec-v1.0.md` for future implementation. This release is not a claim that the original complete two-application definition of done has been satisfied.

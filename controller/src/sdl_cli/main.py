@@ -84,6 +84,30 @@ async def run(args) -> None:
         command = args.command
         if command == "status":
             result = await client.call("system.snapshot")
+        elif command in ("plugins", "plugin-rescan"):
+            result = await client.call("plugins.list" if command == "plugins" else "plugins.rescan")
+        elif command in ("plugin-approve", "plugin-enable", "plugin-disable", "plugin-restart"):
+            params = {"pluginId": args.plugin_id, "pluginVersion": args.version}
+            if command == "plugin-approve":
+                catalog = await client.call("plugins.rescan")
+                package = next((p for p in catalog["packages"] if p["pluginId"] == args.plugin_id and p["pluginVersion"] == args.version), None)
+                if package is None:
+                    raise SdlError("PLUGIN_UNAVAILABLE", "Package is not installed or its files are invalid.")
+                print(json.dumps(package, indent=2, ensure_ascii=False), file=sys.stderr)
+                print("Native plugins are trusted code, not a security sandbox. Approval can start already-applied visible instances.", file=sys.stderr)
+                approved = args.yes or (sys.stdin.isatty() and input("Type APPROVE after reviewing this package: ") == "APPROVE")
+                if not approved:
+                    raise SdlError("CONFIRMATION_REQUIRED", "Nothing was approved.")
+                params.update({k: package[k] for k in ("fingerprint", "interpreterIdentity")})
+                params["confirmed"] = True
+                result = await client.call("plugins.approve", params)
+            elif command == "plugin-restart":
+                result = await client.call("plugins.restart", params)
+            else:
+                params["enabled"] = command == "plugin-enable"
+                result = await client.call("plugins.setEnabled", params)
+        elif command in ("blank", "unblank"):
+            result = await client.call("runtime.blank", {"blanked": command == "blank"})
         elif command == "doctor":
             result = await client.call("system.diagnostics")
         elif command == "get":
@@ -191,8 +215,13 @@ def parser() -> argparse.ArgumentParser:
     result = argparse.ArgumentParser(description="Local CLI for the standalone Stream Deck Controller.")
     result.add_argument("--simulator", action="store_true", help="Connect to the isolated simulator instance.")
     commands = result.add_subparsers(dest="command", required=True)
-    for name in ("status", "pause", "resume", "devices", "retry", "events", "disconnect", "reconnect"):
+    for name in ("status", "pause", "resume", "devices", "retry", "events", "disconnect", "reconnect", "plugins", "plugin-rescan", "blank", "unblank"):
         commands.add_parser(name)
+    for name in ("plugin-approve", "plugin-enable", "plugin-disable", "plugin-restart"):
+        command = commands.add_parser(name)
+        command.add_argument("plugin_id"); command.add_argument("version")
+        if name == "plugin-approve":
+            command.add_argument("--yes", action="store_true", help="Explicitly approve trusted native code after reviewing the package.")
     command = commands.add_parser("init"); command.add_argument("output")
     command = commands.add_parser("validate"); command.add_argument("file")
     command = commands.add_parser("doctor"); command.add_argument("--offline", action="store_true")

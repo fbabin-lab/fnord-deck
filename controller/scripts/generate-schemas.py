@@ -46,13 +46,16 @@ appearance = obj({
     "fontWeight": enum("normal", "bold"), "textAlign": enum("left", "center", "right"),
     "imageFit": enum("contain", "cover", "stretch"),
     "paddingPx": {"type": "integer", "minimum": 0, "maximum": 20},
-    "dynamic": nullable({"type": "object", "maxProperties": 32}),
+    "dynamic": nullable({"anyOf": [obj({"enabled": {"type": "boolean"}, "textTemplate": string(512),
+        "allowedOverrides": {"type": "array", "items": enum("text", "icon", "progress"), "uniqueItems": True, "maxItems": 3},
+        "numberDecimals": {"type": "integer", "minimum": 0, "maximum": 3},
+        "staleAfterMs": {"type": "integer", "minimum": 1000, "maximum": 3600000}}, required=["enabled"]), {"type": "object", "not": {"required": ["enabled"]}, "additionalProperties": True}]}),
 })
 binding = nullable(obj({
     "instanceId": uid, "pluginId": string(128), "pluginVersion": string(64),
     "contributionId": string(128), "settingsVersion": {"type": "integer", "minimum": 1},
-    "settings": {"type": "object"}, "secretRefs": {"type": "object", "additionalProperties": string(256)},
-    "refreshIntervalMs": {"type": "integer", "minimum": 1},
+    "settings": {"type": "object", "maxProperties": 32}, "secretRefs": {"type": "object", "additionalProperties": string(256)},
+    "refreshIntervalMs": {"type": "integer", "minimum": 1, "maximum": 3600000},
 }))
 button = obj({
     "id": uid, "keyIndex": {"type": "integer", "minimum": 0, "maximum": 255},

@@ -171,6 +171,18 @@ class Draft:
             item["action"] = copy.deepcopy(action)
         self.change("action", operation)
 
+    def set_plugin(self, page_id: str, index: int, binding: dict | None, dynamic: dict | None) -> None:
+        """Attach display data without changing the button's independent action."""
+        def operation(doc):
+            page = self._slot(doc, page_id, index)
+            item = next((b for b in page["buttons"] if b["keyIndex"] == index), None)
+            if item is None:
+                item = button(index, "")
+                page["buttons"].append(item)
+            item["pluginBinding"] = copy.deepcopy(binding)
+            item["appearance"]["dynamic"] = copy.deepcopy(dynamic)
+        self.change("plugin", operation)
+
     def add_section(self, parent_id: str, index: int, name: str) -> str:
         def operation(doc):
             parent = self._slot(doc, parent_id, index)
