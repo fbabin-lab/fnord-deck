@@ -18,6 +18,7 @@ class Inspector(QWidget):
     imageRequested = Signal()
     removeImageRequested = Signal()
     actionRequested = Signal()
+    pluginRequested = Signal()
     sectionRequested = Signal()
     homeRequested = Signal()
     noActionRequested = Signal()
@@ -113,7 +114,7 @@ class Inspector(QWidget):
         self.action_label.setTextFormat(Qt.TextFormat.PlainText)
         self.action_label.setWordWrap(True)
         form.addRow(tr("action"), self.action_label)
-        for key, signal in (("application_script", self.actionRequested), ("create_section", self.sectionRequested),
+        for key, signal in (("plugin_button", self.pluginRequested), ("application_script", self.actionRequested), ("create_section", self.sectionRequested),
                             ("go_home", self.homeRequested), ("no_action", self.noActionRequested)):
             control = QPushButton(tr(key))
             control.clicked.connect(signal)

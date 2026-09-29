@@ -9,6 +9,7 @@ from uuid import UUID, uuid4
 from jsonschema import Draft202012Validator, FormatChecker
 
 from .errors import SdlError
+from .dynamic import validate_dynamic
 from .jsonutil import digest, dumps, loads
 from .limits import CONFIG_BYTES, MAX_DEPTH
 
@@ -138,6 +139,7 @@ def validate(document: Any, asset_exists=None) -> dict:
         if len(dumps(ext)) > 16384:
             errors.append(issue("LIMIT_EXCEEDED", "Extensions exceed 16 KiB."))
     seen: set[str] = {document["configurationId"]}
+    instance_ids: set[str] = set()
     pages = pages_by_id(document)
     root = document["rootPageId"]
     if root not in pages:
@@ -183,10 +185,20 @@ def validate(document: Any, asset_exists=None) -> dict:
             asset = item["appearance"]["iconAssetId"]
             if asset and asset_exists is not None and not asset_exists(asset):
                 errors.append(issue("ASSET_UNAVAILABLE", "Import the referenced image before applying.", page=page, item=item))
-            if item["pluginBinding"] is not None or action["type"] == "core.plugin.invoke":
-                warnings.append(issue("PLUGIN_DEFERRED", "Plugins are preserved but not loaded in this release.", page=page, item=item))
-            if item["appearance"]["dynamic"] is not None:
-                warnings.append(issue("PLUGIN_DEFERRED", "Dynamic appearance is stored but not evaluated.", page=page, item=item))
+            binding = item["pluginBinding"]
+            if binding is not None:
+                if binding["instanceId"] in instance_ids:
+                    errors.append(issue("DUPLICATE_PLUGIN_INSTANCE", "Each bound button needs its own plugin instance UUID.", page=page, item=item))
+                instance_ids.add(binding["instanceId"])
+                if binding["refreshIntervalMs"] < 1000:
+                    warnings.append(issue("PLUGIN_INTERVAL_CLAMPED", "Plugin refresh is clamped to at least one second.", page=page, item=item))
+            if action["type"] == "core.plugin.invoke":
+                warnings.append(issue("PLUGIN_INVOKE_UNAVAILABLE", "Plugin commands are reserved; application/script actions remain independent.", page=page, item=item))
+            if item["appearance"]["dynamic"] is not None and "enabled" in item["appearance"]["dynamic"]:
+                try:
+                    validate_dynamic(item["appearance"]["dynamic"])
+                except SdlError as exc:
+                    errors.append(issue(exc.code, exc.message, page=page, item=item))
     for page, total in incoming.items():
         if total != (0 if page == root else 1):
             errors.append(issue("INVALID_TREE", "Every non-root page needs exactly one incoming navigation button."))

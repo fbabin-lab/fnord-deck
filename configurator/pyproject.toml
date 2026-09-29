@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "streamdeck-linux-configurator"
-version = "0.1.0"
+version = "0.2.0"
 description = "Independent offline-capable Stream Deck XL configurator for Ubuntu 24.04"
 readme = "README.md"
 license = "GPL-3.0-only"
@@ -31,7 +31,7 @@ pythonpath = ["src"]
 testpaths = ["tests"]
 asyncio_mode = "auto"
 addopts = "-ra"
-markers = ["gui: requires PySide6 and a Qt platform plugin", "integration: uses the real Controller simulator", "real_execution: enables an isolated test command in the simulator"]
+markers = ["gui: requires PySide6 and a Qt platform plugin", "integration: uses the real Controller simulator", "real_execution: enables an isolated test command in the simulator", "real_plugins: enables approved real plugin code in an isolated simulator"]
 
 [tool.ruff]
 target-version = "py312"

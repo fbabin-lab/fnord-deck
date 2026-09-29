@@ -1,0 +1,128 @@
+{
+  "schemaVersion": "1.0",
+  "configurationId": "f76f10b3-36c9-4dbe-a263-e1b10556b65d",
+  "name": "CPU plugin host example (requires future plugin host)",
+  "target": {
+    "adapterId": "elgato.streamdeck",
+    "vendorId": 4057,
+    "productId": 108,
+    "serialNumber": null
+  },
+  "layout": {
+    "rows": 4,
+    "columns": 8,
+    "keyWidth": 96,
+    "keyHeight": 96
+  },
+  "rootPageId": "7f577f6f-4902-44a9-8ac2-6902c47d13e3",
+  "settings": {
+    "brightnessPercent": 50,
+    "locale": "en"
+  },
+  "pages": [
+    {
+      "id": "7f577f6f-4902-44a9-8ac2-6902c47d13e3",
+      "name": "Home",
+      "parentPageId": null,
+      "buttons": [
+        {
+          "id": "8fc0e803-4541-43e2-8254-bc1465e4ba34",
+          "keyIndex": 0,
+          "enabled": true,
+          "appearance": {
+            "iconAssetId": null,
+            "text": "CPU unavailable",
+            "layout": "textOnly",
+            "backgroundColor": "#000000",
+            "textColor": "#FFFFFF",
+            "fontFamily": "DejaVu Sans",
+            "fontSizePx": 16,
+            "fontWeight": "normal",
+            "textAlign": "center",
+            "imageFit": "contain",
+            "paddingPx": 4,
+            "dynamic": {
+              "enabled": true,
+              "textTemplate": "{{label}}\n{{value}}{{unit}}",
+              "allowedOverrides": [
+                "text",
+                "progress"
+              ],
+              "numberDecimals": 0,
+              "staleAfterMs": 15000
+            }
+          },
+          "action": {
+            "type": "core.none"
+          },
+          "pluginBinding": {
+            "instanceId": "ba90f4f8-dd34-45f4-9fe9-538bd23551af",
+            "pluginId": "org.fnord.cpu",
+            "pluginVersion": "0.2.0",
+            "contributionId": "usage",
+            "settingsVersion": 1,
+            "settings": {
+              "scope": "total",
+              "logicalCpu": 0,
+              "label": "CPU Total",
+              "decimals": 0,
+              "warningPercent": 85
+            },
+            "secretRefs": {},
+            "refreshIntervalMs": 2000
+          },
+          "extensions": {}
+        },
+        {
+          "id": "fa0c33c5-069f-4c64-877c-59181ddda237",
+          "keyIndex": 1,
+          "enabled": true,
+          "appearance": {
+            "iconAssetId": null,
+            "text": "CPU unavailable",
+            "layout": "textOnly",
+            "backgroundColor": "#000000",
+            "textColor": "#FFFFFF",
+            "fontFamily": "DejaVu Sans",
+            "fontSizePx": 16,
+            "fontWeight": "normal",
+            "textAlign": "center",
+            "imageFit": "contain",
+            "paddingPx": 4,
+            "dynamic": {
+              "enabled": true,
+              "textTemplate": "{{label}}\n{{value}}{{unit}}",
+              "allowedOverrides": [
+                "text",
+                "progress"
+              ],
+              "numberDecimals": 0,
+              "staleAfterMs": 15000
+            }
+          },
+          "action": {
+            "type": "core.none"
+          },
+          "pluginBinding": {
+            "instanceId": "85546eb1-50bd-4d3b-b44f-d11ed0b33510",
+            "pluginId": "org.fnord.cpu",
+            "pluginVersion": "0.2.0",
+            "contributionId": "usage",
+            "settingsVersion": 1,
+            "settings": {
+              "scope": "logicalCpu",
+              "logicalCpu": 0,
+              "label": "CPU 0",
+              "decimals": 0,
+              "warningPercent": 85
+            },
+            "secretRefs": {},
+            "refreshIntervalMs": 5000
+          },
+          "extensions": {}
+        }
+      ]
+    }
+  ],
+  "extensions": {}
+}

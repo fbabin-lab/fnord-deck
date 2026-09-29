@@ -10,7 +10,7 @@ from uuid import uuid4
 from PIL import Image
 
 from sdl_core.errors import SdlError
-from sdl_core.jsonutil import atomic_write, digest
+from sdl_core.jsonutil import atomic_write, digest, dumps, loads
 from sdl_core.limits import ASSET_BYTES
 from sdl_core.model import require_valid, validate
 from sdl_core.render import Renderer
@@ -34,6 +34,21 @@ class Backend:
     async def rpc(self, method: str, params: dict | None = None) -> dict:
         async with self.client() as client:
             return await client.call(method, params)
+
+    async def plugin_catalog(self, *, cached=False) -> dict:
+        path = self.workspace.paths.state / "plugin-catalog.json"
+        if cached:
+            if not path.exists():
+                return {"packages": [], "cached": True}
+            value = loads(await asyncio.to_thread(read_bounded, path, 8 * 1024 * 1024))
+            if not isinstance(value, dict) or not isinstance(value.get("packages"), list):
+                raise SdlError("PLUGIN_CATALOG_INVALID", "Invalid cached plugin catalog.")
+            return {**value, "cached": True}
+        value = await self.rpc("plugins.list")
+        if not value.get("supported") or not value.get("display"):
+            raise SdlError("PLUGIN_HOST_REQUIRED", "Upgrade the Controller to version 0.2.0 for plugin displays.")
+        await asyncio.to_thread(atomic_write, path, dumps({"packages": value["packages"]}))
+        return value
 
     async def snapshot(self) -> dict:
         return await self.rpc("system.snapshot")

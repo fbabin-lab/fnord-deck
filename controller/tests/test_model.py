@@ -68,4 +68,4 @@ def test_deferred_plugin_is_preserved():
     doc["pages"][0]["buttons"][1]["action"] = {"type": "core.plugin.invoke", "commandId": "future"}
     result = validate(doc)
     assert not result["errors"]
-    assert any(w["code"] == "PLUGIN_DEFERRED" for w in result["warnings"])
+    assert any(w["code"] == "PLUGIN_INVOKE_UNAVAILABLE" for w in result["warnings"])

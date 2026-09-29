@@ -1,8 +1,8 @@
-# Stream Deck Linux Controller — 0.1.0
+# Stream Deck Linux Controller — 0.2.0
 
 Standalone Controller for **Ubuntu 24.04 LTS** and **Elgato Stream Deck XL 20GAT9901** (USB `0fd9:006c`, 32 keys). It owns the USB connection, draws icon/text buttons, navigates nested sections and launches explicitly configured programs.
 
-**This release does not include the graphical Configurator or a plugin host.** A separate `sdlctl` command-line client edits/applies JSON configurations through the same local API that the future Configurator will use. Plugin configuration fields are preserved but plugin code is never loaded.
+**The Controller now includes a visibility-aware polling/display plugin host.** The graphical Configurator remains a separate application in `../configurator/`. The `sdlctl` client and Configurator use the same local API. Read [the 0.2.0 plugin guide](../docs/PLUGIN-HOST-0.2.0.md) and [current verification](../docs/VERIFICATION-0.2.0.md). Plugin installation and explicit approval are separate; disabled, hidden and unapproved instances do not sample.
 
 ## Install on Ubuntu
 

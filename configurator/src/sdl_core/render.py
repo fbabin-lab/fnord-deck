@@ -1,5 +1,8 @@
 """Upright logical rendering shared with the future Configurator. No native USB transforms."""
 from collections import OrderedDict
+from functools import lru_cache
+
+from .dynamic import image_for, visual
 from pathlib import Path
 
 from PIL import Image, ImageDraw, ImageFont, ImageOps
@@ -12,12 +15,18 @@ from .model import DEFAULT_APPEARANCE, Capabilities
 FONT_ROOTS = [Path("/usr/share/fonts/truetype/dejavu"), Path("/usr/share/fonts/truetype/liberation2")]
 
 
+@lru_cache(maxsize=2)
 def font_path(bold: bool = False) -> Path:
     names = ["DejaVuSans-Bold.ttf" if bold else "DejaVuSans.ttf", "LiberationSans-Bold.ttf" if bold else "LiberationSans-Regular.ttf"]
     for root, name in zip(FONT_ROOTS, names, strict=True):
         if (root / name).is_file():
             return root / name
     raise SdlError("FONT_UNAVAILABLE", "Install fonts-dejavu-core (or fonts-liberation2).")
+
+
+@lru_cache(maxsize=256)
+def cached_font(path: str, size: int):
+    return ImageFont.truetype(path, size)
 
 
 def _lines(text: str, font, width: int) -> list[str]:
@@ -42,7 +51,7 @@ def _text(draw: ImageDraw.ImageDraw, box: tuple[int, int, int, int], appearance:
         return
     path = font_path(appearance["fontWeight"] == "bold")
     for size in range(appearance["fontSizePx"], 7, -1):
-        font = ImageFont.truetype(str(path), size)
+        font = cached_font(str(path), size)
         lines = _lines(text, font, width)
         step = size + 2
         if len(lines) * step <= height:
@@ -70,9 +79,10 @@ class Renderer:
         self.font_identity = [(str(font_path(b)), font_path(b).stat().st_mtime_ns) for b in (False, True)]
 
     def render(self, item: dict | None, capabilities: Capabilities, *, back: bool = False,
-               locale: str = "en", overlay: str | None = None) -> Image.Image:
+               locale: str = "en", overlay: str | None = None, dynamic: dict | None = None) -> Image.Image:
+        effective = visual(item, dynamic, capabilities.keyWidth) if item and not back else None
         key = digest({"button": item, "back": back, "locale": locale, "overlay": overlay,
-                      "layout": capabilities.json(), "font": self.font_identity, "renderer": 1})
+                      "layout": capabilities.json(), "font": self.font_identity, "renderer": 2, "dynamic": effective})
         size = (capabilities.keyWidth, capabilities.keyHeight)
         if key in self.cache:
             self.cache.move_to_end(key)
@@ -83,11 +93,14 @@ class Renderer:
         if item is None:
             image = Image.new("RGB", size, "black")
         else:
-            appearance = item["appearance"]
+            appearance = dict(item["appearance"])
+            if effective and effective["text"] is not None:
+                appearance["text"] = effective["text"]
+            dynamic_icon = image_for(effective)
             image = Image.new("RGBA", size, appearance["backgroundColor"])
             pad = min(appearance["paddingPx"], min(size) // 4)
             x, y, width, height = pad, pad, size[0] - 2 * pad, size[1] - 2 * pad
-            icon = appearance["iconAssetId"]
+            icon = appearance["iconAssetId"] or ("dynamic" if dynamic_icon else None)
             text = appearance["text"]
             layout = appearance["layout"]
             text_box = (x, y, width, height)
@@ -97,7 +110,7 @@ class Renderer:
                 icon_box = (x, y, width, icon_height)
                 text_box = (x, y + icon_height + 2, width, height - icon_height - 2)
             if icon and layout != "textOnly":
-                original = self.assets.image(icon)
+                original = dynamic_icon if dynamic_icon is not None else self.assets.image(icon)
                 ix, iy, iw, ih = icon_box
                 fit = appearance["imageFit"]
                 if fit == "cover":
@@ -127,6 +140,14 @@ class Renderer:
             if not item["enabled"]:
                 image = Image.blend(image, Image.new("RGB", size, "black"), 0.6)
                 ImageDraw.Draw(image).line([(3, 3), (size[0] - 4, size[1] - 4)], fill="#888888", width=2)
+            if effective:
+                draw = ImageDraw.Draw(image)
+                progress = effective["progressPixels"]
+                if progress is not None and progress > 0:
+                    draw.rectangle((2, size[1] - 5, 1 + progress, size[1] - 3), fill=appearance["textColor"])
+                if effective["marker"] != "ok":
+                    color = "#E8AF38" if effective["marker"] == "warning" else "#888888"
+                    draw.rectangle((2, 2, 7, 7), fill=color)
             if overlay:
                 draw = ImageDraw.Draw(image)
                 color = "#E64A45" if overlay in ("failed", "timedOut", "unknownAfterRestart") else "#36A867" if overlay in ("succeeded", "launched") else "#447AC2"
@@ -139,7 +160,7 @@ class Renderer:
             self.cache_bytes -= len(removed)
         return image
 
-    def page(self, document: dict, page_id: str, overlays: dict | None = None) -> list[Image.Image]:
+    def page(self, document: dict, page_id: str, overlays: dict | None = None, dynamics: dict | None = None) -> list[Image.Image]:
         capabilities = Capabilities(**document["layout"])
         page = next(p for p in document["pages"] if p["id"] == page_id)
         buttons = {b["keyIndex"]: b for b in page["buttons"]}
@@ -147,5 +168,6 @@ class Renderer:
         return [self.render(buttons.get(index), capabilities,
                             back=index == 0 and page["parentPageId"] is not None,
                             locale=document["settings"]["locale"],
-                            overlay=overlays.get(buttons.get(index, {}).get("id")))
+                            overlay=overlays.get(buttons.get(index, {}).get("id")),
+                            dynamic=(dynamics or {}).get(buttons.get(index, {}).get("id")))
                 for index in range(capabilities.key_count)]

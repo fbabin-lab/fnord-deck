@@ -1,3 +1,5 @@
+> Version 0.2.0 adds approved polling/display plugins and API 1.1. The [current plugin guide](../../docs/PLUGIN-HOST-0.2.0.md) supersedes earlier plugin-deferred statements below. Run both this document's baseline acceptance checks and the plugin guide's additional checks.
+
 # Security boundaries
 
 The Controller runs as the desktop user. It deliberately launches programs chosen and approved by that user. These programs have the user's rights: this is not a sandbox for untrusted scripts. Socket ownership and peer-UID checks separate users, not mutually hostile programs running under one UID. Administrator/root access is outside this boundary.

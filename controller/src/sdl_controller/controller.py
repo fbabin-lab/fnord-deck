@@ -17,7 +17,7 @@ from uuid import uuid4
 from PIL import Image, features
 
 from sdl_core.assets import AssetStore
-from sdl_core.contracts import DeferredExtensions
+from .plugins.host import PluginHost
 from sdl_core.errors import SdlError
 from sdl_core.jsonutil import atomic_write, digest, dumps, read_json
 from sdl_core.limits import CHUNK_BYTES, FRAME_BYTES, UPLOAD_SECONDS
@@ -34,11 +34,11 @@ from .repository import ConfigurationRepository, ExecutionRepository
 from .session import SessionContextProvider
 
 LOG = logging.getLogger("sdl")
-VERSION = "0.1.0"
+VERSION = "0.2.0"
 
 
 class Controller:
-    def __init__(self, paths: Paths, *, simulator: bool = False, allow_execution: bool = False, adapter=None) -> None:
+    def __init__(self, paths: Paths, *, simulator: bool = False, allow_execution: bool = False, adapter=None, allow_plugins: bool = False, plugin_mode: str = "systemd", plugin_launcher=None) -> None:
         self.paths = paths
         self.paths.prepare()
         self.lock = ProcessLock(self.paths.runtime / "controller.lock")
@@ -46,7 +46,6 @@ class Controller:
         self.repository = ConfigurationRepository(paths.config)
         self.assets = AssetStore(paths.data / "assets")
         self.renderer = Renderer(self.assets)
-        self.extensions = DeferredExtensions()
         self.session = SessionContextProvider()
         self.execution = ActionExecutor(ExecutionRepository(paths.state / "executions.json"),
                                         Launcher(paths.runtime), self.session, self.execution_changed,
@@ -73,6 +72,8 @@ class Controller:
             except (OSError, SdlError, KeyError):
                 self.selected_serial = None
         self.paused = False
+        self.blanked = False
+        self._sleep_offset = self.sleep_offset()
         self.synchronized = False
         self.redraw = asyncio.Event()
         self.retry = asyncio.Event()
@@ -87,6 +88,7 @@ class Controller:
         self.mailbox: Mailbox | None = None
         self.tasks: set[asyncio.Task] = set()
         self.closing = False
+        self.extensions = PluginHost(self, mode=plugin_mode, allowed=not simulator or allow_plugins, launcher=plugin_launcher)
         self.action_handlers = {
             "core.none": self._none, "core.navigate": self._navigate_action,
             "core.home": self._home, "core.execute": self._execute,
@@ -138,6 +140,7 @@ class Controller:
             self.gate.reset(self.context, disconnect=True)
             self.mailbox = Mailbox(asyncio.get_running_loop(), self.input_record, self.input_overflow)
             await self.server.start()
+            await self.extensions.start()
             self.spawn(self.device_loop(), "device-lifecycle")
             self.spawn(self.render_loop(), "render")
             self.spawn(self.maintenance_loop(), "maintenance")
@@ -156,6 +159,10 @@ class Controller:
         self.generation += 1
         self.gate.reset(self.context, disconnect=disconnect)
         self.synchronized = False
+        if disconnect:
+            self.extensions.hide()
+        else:
+            self.extensions.layout_changing()
         self.redraw.set()
 
     def request_redraw(self) -> None:
@@ -167,7 +174,22 @@ class Controller:
         self.request_redraw()
         self.emit("input.resynchronized", self.last_error)
 
+    @staticmethod
+    def sleep_offset() -> float:
+        return time.clock_gettime(time.CLOCK_BOOTTIME) - time.monotonic()
+
+    def check_resume(self) -> bool:
+        offset = self.sleep_offset()
+        resumed = offset - self._sleep_offset > .5
+        self._sleep_offset = offset
+        if resumed:
+            self.invalidated(disconnect=True)
+            self.emit("runtime.resumed", {"freshPluginBaselines": True})
+        return resumed
+
     def input_record(self, record: InputRecord, *, baseline_only: bool = False) -> None:
+        if self.check_resume():
+            return
         if self.closing:
             return
         page = pages_by_id(self.document)[self.page_id]
@@ -178,7 +200,7 @@ class Controller:
             self.spawn(self.activate(key, identity, record.context), "button-activation")
 
     async def activate(self, key: int, identity: str, context: InputContext) -> None:
-        if self.paused or context != self.context or not self.gate.enabled or self.closing:
+        if self.paused or self.blanked or context != self.context or not self.gate.enabled or self.closing:
             return
         page = pages_by_id(self.document)[self.page_id]
         if identity == "back:" + self.page_id and key == 0 and page["parentPageId"]:
@@ -228,6 +250,7 @@ class Controller:
         backoff = 0.5
         while not self.closing:
             try:
+                self.check_resume()
                 async with self.io_lock:
                     if self.state == "ready" and not self.retry.is_set():
                         if not await self.io_call(self.adapter.connected):
@@ -300,10 +323,14 @@ class Controller:
                 except TimeoutError:
                     break
             context = self.context
-            # Inhibit input during the non-atomic hardware repaint.
-            self.gate.reset(context)
+            # Only layout transitions invalidate input; value/status-only paints do not.
+            layout_change = self.generation != last_generation or not self.synchronized
+            if layout_change:
+                self.gate.reset(context)
             try:
-                images = await self.render_call(self.document, self.page_id, dict(self.overlay))
+                images = await self.render_call(self.document, self.page_id, dict(self.overlay), self.extensions.states())
+                if self.blanked:
+                    images = [Image.new("RGB", image.size, "black") for image in images]
                 async with self.io_lock:
                     if context != self.context or self.state != "ready":
                         continue
@@ -320,8 +347,9 @@ class Controller:
                             self.synchronized = True
                             last_generation = self.generation
                             last_paint = time.monotonic()
-                            if not self.paused:
+                            if not self.paused and not self.blanked:
                                 self.gate.enable()
+                            self.extensions.reconcile()
                             self.emit("device.synchronized", {"pageId": self.page_id, "pageGeneration": self.generation})
             except asyncio.CancelledError:
                 break
@@ -333,7 +361,7 @@ class Controller:
                 self.emit("render.error", self.last_error)
                 self.state = "error"
                 self.retry.set()
-            # Coalesce status overlays; no background animation/plugin feed exists in this release.
+            # Metric paints use their own fair queue and never trigger a page repaint.
             await asyncio.sleep(0.05)
 
     async def maintenance_loop(self) -> None:
@@ -350,7 +378,7 @@ class Controller:
     def snapshot(self) -> dict:
         return {"runtimeVersion": VERSION, "runtimeEpoch": self.runtime_epoch, "eventSequence": self.sequence,
                 "revision": self.repository.revision, "configurationId": self.document["configurationId"],
-                "currentPageId": self.page_id, "pageGeneration": self.generation, "paused": self.paused,
+                "currentPageId": self.page_id, "pageGeneration": self.generation, "paused": self.paused, "blanked": self.blanked,
                 "device": {"state": self.state, "descriptor": self.device_info, "error": self.device_error,
                            "selectedSerial": self.selected_serial, "deviceSynchronized": self.synchronized},
                 "simulator": self.simulator, "executionEnabled": self.execution.enabled,
@@ -403,13 +431,13 @@ class Controller:
             if params["apiMajor"] != 1:
                 raise SdlError("UNSUPPORTED_VERSION", "This Controller requires local API major version 1.")
             client.hello = True
-            return {"apiMajor": 1, "apiMinor": 0, "runtimeVersion": VERSION, "maxFrameBytes": FRAME_BYTES,
-                    "capabilities": {"plugins": False, "secrets": False, "simulator": self.simulator,
+            return {"apiMajor": 1, "apiMinor": 1, "runtimeVersion": VERSION, "maxFrameBytes": FRAME_BYTES,
+                    "capabilities": {"plugins": True, "pluginApiVersion": "1.1", "pluginDisplay": True, "pluginInvoke": False, "pluginPush": False, "secrets": False, "simulator": self.simulator,
                                      "assetImport": True, "events": True, "preview": True}}
         if method == "system.snapshot":
             return self.snapshot()
         if method == "system.diagnostics":
-            return diagnostics(self.session)
+            return {**diagnostics(self.session), "pluginHost": self.extensions.status()}
         if method == "events.subscribe":
             client.pending_events = set(params.get("types", []))
             return {"subscriptionId": str(uuid4()), "runtimeEpoch": self.runtime_epoch, "eventSequence": self.sequence}
@@ -444,6 +472,10 @@ class Controller:
         if method == "runtime.navigate":
             self.check_revision(params["expectedRevision"])
             return self.navigate(params["pageId"])
+        if method == "runtime.blank":
+            self.blanked = params["blanked"]
+            self.invalidated()
+            return {"blanked": self.blanked}
         if method == "runtime.pause":
             self.paused = params["paused"]
             self.invalidated()
@@ -473,8 +505,8 @@ class Controller:
             return self.execution.history.summaries(params.get("cursor", 0), params.get("limit", 20), params.get("includeOutput", False))
         if method == "execution.cancel":
             return await self.execution.cancel(params["runId"])
-        if method == "plugins.list":
-            return self.extensions.status()
+        if method.startswith("plugins."):
+            return await self.extensions.api(method, params)
         if method == "render.preview":
             page = params.get("pageId", self.page_id)
             if page not in pages_by_id(self.document):
@@ -550,6 +582,7 @@ class Controller:
         if self.mailbox:
             self.mailbox.close()
         await self.server.close()
+        await self.extensions.close()
         tasks = list(self.tasks)
         for task in tasks:
             task.cancel()
@@ -579,4 +612,4 @@ def diagnostics(session: SessionContextProvider | None = None) -> dict:
             "hidLibrary": ctypes.util.find_library("hidapi-libusb"),
             "codecs": {name: features.check(name) for name in ("jpg", "webp", "zlib", "littlecms2")},
             "graphicalSessionAvailable": session.graphical if session else None,
-            "hardwareVerification": "not performed by this diagnostic", "pluginsSupported": False}
+            "hardwareVerification": "not performed by this diagnostic", "pluginsSupported": True, "pluginApiVersion": "1.1", "pluginInvokeSupported": False}

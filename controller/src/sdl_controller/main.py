@@ -27,7 +27,7 @@ async def run(args) -> None:
     rotating = logging.handlers.RotatingFileHandler(paths.state / "controller.log", maxBytes=2 * 1024 * 1024, backupCount=2)
     rotating.setFormatter(formatter)
     log.addHandler(rotating)
-    controller = Controller(paths, simulator=args.simulate, allow_execution=args.allow_execution)
+    controller = Controller(paths, simulator=args.simulate, allow_execution=args.allow_execution, allow_plugins=args.allow_plugins, plugin_mode=args.plugin_mode)
     stop = asyncio.Event()
     loop = asyncio.get_running_loop()
     for sig in (signal.SIGINT, signal.SIGTERM):
@@ -43,6 +43,8 @@ def main() -> None:
     parser = argparse.ArgumentParser(description="Standalone Stream Deck XL Controller (Ubuntu 24.04).")
     parser.add_argument("--simulate", action="store_true", help="Use an isolated simulator; never opens USB.")
     parser.add_argument("--allow-execution", action="store_true", help="Explicitly enable real commands in the simulator.")
+    parser.add_argument("--allow-plugins", action="store_true", help="Opt in to live plugin demand on the simulator current page only.")
+    parser.add_argument("--plugin-mode", choices=("systemd", "development"), default="systemd", help="Default: verified systemd cgroups. Development mode is explicitly UNENFORCED.")
     args = parser.parse_args()
     try:
         asyncio.run(run(args))

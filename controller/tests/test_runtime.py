@@ -154,7 +154,7 @@ async def test_image_import_over_ipc(controller):
         assert controller.adapter.images[1].getbbox()
 
 
-async def test_event_order_and_no_plugin_host(controller):
+async def test_event_order_and_dormant_plugin_host(controller):
     async with Client(controller.paths.socket) as client:
         subscribed = await client.call("events.subscribe", {"types": ["runtime.paused"]})
         async with Client(controller.paths.socket) as other:
@@ -162,10 +162,9 @@ async def test_event_order_and_no_plugin_host(controller):
         event = await asyncio.wait_for(read_frame(client.reader), 2)
         assert event["method"] == "runtime.event"
         assert event["params"]["eventSequence"] > subscribed["eventSequence"]
-        assert (await client.call("plugins.list"))["supported"] is False
-        with pytest.raises(SdlError) as failure:
-            await client.call("plugins.rescan")
-        assert failure.value.code == "FEATURE_DEFERRED"
+        assert (await client.call("plugins.list"))["supported"] is True
+        assert (await client.call("plugins.rescan"))["allowed"] is False
+        assert not controller.extensions.sessions
 
 
 async def test_socket_permissions_duplicate_controller_and_malformed_frame(controller):

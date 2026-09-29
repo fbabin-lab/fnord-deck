@@ -81,7 +81,7 @@ class ReviewDialog(QDialog):
         detail = QPlainTextEdit()
         detail.setReadOnly(True)
         actions = prepared["actions"]
-        parts = [tr("apply_not_execute"), "", tr("execution_count", count=len(actions))]
+        parts = [tr("apply_not_execute"), tr("plugin_apply_notice"), "", tr("execution_count", count=len(actions))]
         for action in actions:
             parts.extend(["", f"{action['page']} / {tr('key_number', number=action['keyIndex'] + 1)}",
                           tr("path") + ": " + action["path"],

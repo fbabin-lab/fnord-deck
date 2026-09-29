@@ -229,8 +229,56 @@
                           "type": "null"
                         },
                         {
-                          "type": "object",
-                          "maxProperties": 32
+                          "anyOf": [
+                            {
+                              "type": "object",
+                              "properties": {
+                                "enabled": {
+                                  "type": "boolean"
+                                },
+                                "textTemplate": {
+                                  "type": "string",
+                                  "maxLength": 512,
+                                  "pattern": "^[^\\u0000]*$"
+                                },
+                                "allowedOverrides": {
+                                  "type": "array",
+                                  "items": {
+                                    "enum": [
+                                      "text",
+                                      "icon",
+                                      "progress"
+                                    ]
+                                  },
+                                  "uniqueItems": true,
+                                  "maxItems": 3
+                                },
+                                "numberDecimals": {
+                                  "type": "integer",
+                                  "minimum": 0,
+                                  "maximum": 3
+                                },
+                                "staleAfterMs": {
+                                  "type": "integer",
+                                  "minimum": 1000,
+                                  "maximum": 3600000
+                                }
+                              },
+                              "required": [
+                                "enabled"
+                              ],
+                              "additionalProperties": false
+                            },
+                            {
+                              "type": "object",
+                              "not": {
+                                "required": [
+                                  "enabled"
+                                ]
+                              },
+                              "additionalProperties": true
+                            }
+                          ]
                         }
                       ]
                     }
@@ -460,7 +508,8 @@
                           "minimum": 1
                         },
                         "settings": {
-                          "type": "object"
+                          "type": "object",
+                          "maxProperties": 32
                         },
                         "secretRefs": {
                           "type": "object",
@@ -472,7 +521,8 @@
                         },
                         "refreshIntervalMs": {
                           "type": "integer",
-                          "minimum": 1
+                          "minimum": 1,
+                          "maximum": 3600000
                         }
                       },
                       "required": [

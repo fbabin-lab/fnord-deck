@@ -42,7 +42,15 @@ METHODS = {
     "execution.test": obj({"buttonId": UUID, "expectedRevision": REV, "confirmed": BOOL, "operationId": UUID}, ("buttonId", "expectedRevision", "confirmed", "operationId")),
     "execution.list": obj({**PAGE, "includeOutput": BOOL}),
     "execution.cancel": obj({"runId": UUID}, ("runId",)),
-    "plugins.list": obj(),
+    "plugins.list": obj(), "plugins.rescan": obj(),
+    "plugins.approve": obj({"pluginId": string(128), "pluginVersion": string(64),
+        "fingerprint": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+        "interpreterIdentity": {"type": "string", "pattern": "^[a-f0-9]{64}$"}, "confirmed": BOOL},
+        ("pluginId", "pluginVersion", "fingerprint", "interpreterIdentity", "confirmed")),
+    "plugins.setEnabled": obj({"pluginId": string(128), "pluginVersion": string(64), "enabled": BOOL},
+        ("pluginId", "pluginVersion", "enabled")),
+    "plugins.restart": obj({"pluginId": string(128), "pluginVersion": string(64)}, ("pluginId", "pluginVersion")),
+    "runtime.blank": obj({"blanked": BOOL}, ("blanked",)),
     "render.preview": obj({"pageId": UUID}),
     "simulator.key": obj({"keyIndex": {"type": "integer", "minimum": 0, "maximum": 31}, "down": BOOL}, ("keyIndex", "down")),
     "simulator.connection": obj({"connected": BOOL}, ("connected",)),
@@ -52,7 +60,7 @@ METHODS = {
 def validate_params(method: str, params: dict) -> None:
     if method not in METHODS:
         if method.startswith(("plugins.", "secret.")):
-            raise SdlError("FEATURE_DEFERRED", "Plugin and secret-management APIs are deferred.")
+            raise SdlError("FEATURE_DEFERRED", "This plugin/secret capability is not supported.")
         raise SdlError("METHOD_NOT_FOUND", "Unknown API method.")
     errors = list(Draft202012Validator(METHODS[method]).iter_errors(params))
     if errors:

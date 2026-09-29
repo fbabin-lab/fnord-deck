@@ -28,6 +28,7 @@ from .dialogs import (
 )
 from .document import Draft, asset_ids
 from .inspector import Inspector
+from .plugin_dialogs import PluginBindingDialog, PluginManagerDialog
 from .storage import Workspace
 from .widgets import KeyButton, combo
 
@@ -47,6 +48,7 @@ class MainWindow(QMainWindow):
         self.token = str(uuid4())
         self.snapshot: dict | None = None
         self.connected = False
+        self.plugin_catalog = {"packages": []}
         self.loading_fields = False
         self._busy = 0
         self._polling = False
@@ -137,8 +139,8 @@ class MainWindow(QMainWindow):
         settings = QPushButton(self.tr("deck_settings"))
         settings.clicked.connect(self.settings)
         side.addWidget(settings)
-        plugins = QPushButton(self.tr("plugins_later"))
-        plugins.clicked.connect(lambda: notice(self, self.tr, self.tr("plugins_explanation")))
+        plugins = QPushButton(self.tr("plugins"))
+        plugins.clicked.connect(self.manage_plugins)
         side.addWidget(plugins)
         splitter.addWidget(sidebar)
         center = QWidget()
@@ -223,6 +225,7 @@ class MainWindow(QMainWindow):
         self.inspector.imageRequested.connect(lambda: self.import_image())
         self.inspector.removeImageRequested.connect(lambda: self.edit_appearance({"iconAssetId": None}, reload=True))
         self.inspector.actionRequested.connect(self.edit_execution)
+        self.inspector.pluginRequested.connect(self.edit_plugin)
         self.inspector.sectionRequested.connect(self.add_section)
         self.inspector.homeRequested.connect(lambda: self.edit(lambda: self.draft.set_action(self.page_id, self.selected, {"type": "core.home"})))
         self.inspector.noActionRequested.connect(lambda: self.edit(lambda: self.draft.set_action(self.page_id, self.selected, {"type": "core.none"})))
@@ -823,6 +826,24 @@ class MainWindow(QMainWindow):
         dialog = ExecutionDialog(self, self.tr, item["action"] if item and item["action"]["type"] == "core.execute" else None)
         if dialog.exec() == QDialog.DialogCode.Accepted:
             self.edit(lambda: self.draft.set_action(self.page_id, self.selected, dialog.result_action))
+
+    def manage_plugins(self) -> None:
+        def show(catalog):
+            self.plugin_catalog = catalog
+            PluginManagerDialog(self, self.tr, catalog).exec()
+        self.run(self.backend.plugin_catalog(), show, "loading")
+
+    def edit_plugin(self) -> None:
+        page_id, index = self.page_id, self.selected
+        if index == 0 and self.draft.page(page_id)["parentPageId"]:
+            return
+        item = copy.deepcopy(self.draft.item(page_id, index))
+        def show(catalog):
+            self.plugin_catalog = catalog
+            dialog = PluginBindingDialog(self, self.tr, catalog, item, offline=bool(catalog.get("cached")))
+            if dialog.exec() == QDialog.DialogCode.Accepted:
+                self.edit(lambda: self.draft.set_plugin(page_id, index, dialog.result_binding, dialog.result_dynamic))
+        self.run(self.backend.plugin_catalog(cached=not self.connected), show, "loading")
 
     def settings(self) -> None:
         def show(devices):

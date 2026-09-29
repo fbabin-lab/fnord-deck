@@ -349,6 +349,102 @@
       "required": [],
       "additionalProperties": false
     },
+    "plugins.rescan": {
+      "type": "object",
+      "properties": {},
+      "required": [],
+      "additionalProperties": false
+    },
+    "plugins.approve": {
+      "type": "object",
+      "properties": {
+        "pluginId": {
+          "type": "string",
+          "maxLength": 128,
+          "pattern": "^[^\\u0000]*$"
+        },
+        "pluginVersion": {
+          "type": "string",
+          "maxLength": 64,
+          "pattern": "^[^\\u0000]*$"
+        },
+        "fingerprint": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "interpreterIdentity": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "confirmed": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "pluginId",
+        "pluginVersion",
+        "fingerprint",
+        "interpreterIdentity",
+        "confirmed"
+      ],
+      "additionalProperties": false
+    },
+    "plugins.setEnabled": {
+      "type": "object",
+      "properties": {
+        "pluginId": {
+          "type": "string",
+          "maxLength": 128,
+          "pattern": "^[^\\u0000]*$"
+        },
+        "pluginVersion": {
+          "type": "string",
+          "maxLength": 64,
+          "pattern": "^[^\\u0000]*$"
+        },
+        "enabled": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "pluginId",
+        "pluginVersion",
+        "enabled"
+      ],
+      "additionalProperties": false
+    },
+    "plugins.restart": {
+      "type": "object",
+      "properties": {
+        "pluginId": {
+          "type": "string",
+          "maxLength": 128,
+          "pattern": "^[^\\u0000]*$"
+        },
+        "pluginVersion": {
+          "type": "string",
+          "maxLength": 64,
+          "pattern": "^[^\\u0000]*$"
+        }
+      },
+      "required": [
+        "pluginId",
+        "pluginVersion"
+      ],
+      "additionalProperties": false
+    },
+    "runtime.blank": {
+      "type": "object",
+      "properties": {
+        "blanked": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "blanked"
+      ],
+      "additionalProperties": false
+    },
     "render.preview": {
       "type": "object",
       "properties": {

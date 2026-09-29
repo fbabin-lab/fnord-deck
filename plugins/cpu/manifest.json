@@ -1,0 +1,131 @@
+{
+  "manifestVersion": "1.1",
+  "id": "org.fnord.cpu",
+  "version": "0.2.0",
+  "name": {
+    "en": "CPU Usage",
+    "fr": "Utilisation du processeur"
+  },
+  "description": {
+    "en": "Visibility-driven aggregate or logical CPU utilization.",
+    "fr": "Utilisation globale ou par processeur logique, uniquement lorsque visible."
+  },
+  "api": {
+    "min": "1.1",
+    "max": "1.1"
+  },
+  "protocolFeatures": [
+    "refreshMany"
+  ],
+  "resourceProfile": "lightweight",
+  "entrypoint": {
+    "kind": "interpreted",
+    "interpreterPath": "/usr/bin/python3",
+    "interpreterArguments": [
+      "-I",
+      "-B"
+    ],
+    "scriptPath": "cpu_usage.py",
+    "arguments": []
+  },
+  "files": {
+    "LICENSE": "3972dc9744f6499f0f9b2dbf76696f2ae7ad8af9b23dde66d6af86c9dfb36986",
+    "README.md": "fa5365db24b39836e861a0da333eabfcb00ed4af5d0070aa939fac812ddb7e15",
+    "cpu_usage.py": "6e30be35174151732bd0f00db4f0c193a4b03748ac7bf777cff5ecde33edd1fd"
+  },
+  "assets": {},
+  "permissions": {
+    "filesystemRead": [
+      "/proc/stat"
+    ],
+    "network": false,
+    "processExecution": false,
+    "secrets": []
+  },
+  "contributions": [
+    {
+      "id": "usage",
+      "name": {
+        "en": "CPU Usage",
+        "fr": "Utilisation du processeur"
+      },
+      "capabilities": [
+        "display"
+      ],
+      "settingsVersion": 1,
+      "settingsSchema": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "scope": {
+            "type": "string",
+            "enum": [
+              "total",
+              "logicalCpu"
+            ],
+            "default": "total",
+            "title": "CPU scope"
+          },
+          "logicalCpu": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 4095,
+            "default": 0,
+            "title": "Logical CPU index"
+          },
+          "label": {
+            "type": "string",
+            "maxLength": 32,
+            "pattern": "^[^\\u0000-\\u001f\\u007f]*$",
+            "default": "CPU",
+            "title": "Label"
+          },
+          "decimals": {
+            "type": "integer",
+            "enum": [
+              0,
+              1
+            ],
+            "default": 0,
+            "title": "Decimal places"
+          },
+          "warningPercent": {
+            "type": "number",
+            "minimum": 1,
+            "maximum": 100,
+            "default": 85,
+            "title": "Warning threshold (%)"
+          }
+        }
+      },
+      "secrets": [],
+      "updateMode": "poll",
+      "backgroundPolicy": "visibleOnly",
+      "minRefreshIntervalMs": 1000,
+      "defaultRefreshIntervalMs": 2000,
+      "commands": [],
+      "settingsLabels": {
+        "scope": {
+          "en": "CPU scope",
+          "fr": "Portée du processeur"
+        },
+        "logicalCpu": {
+          "en": "Logical CPU index",
+          "fr": "Indice du processeur logique"
+        },
+        "label": {
+          "en": "Label",
+          "fr": "Libellé"
+        },
+        "decimals": {
+          "en": "Measurement decimal places",
+          "fr": "Décimales de la mesure"
+        },
+        "warningPercent": {
+          "en": "Warning threshold (%)",
+          "fr": "Seuil d’avertissement (%)"
+        }
+      }
+    }
+  ]
+}

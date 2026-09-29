@@ -1,4 +1,4 @@
-"""Real socket integration with the unchanged Controller v0.1.0 subprocess.
+"""Real socket integration with the Controller v0.2.0 subprocess.
 
 Set SDL_CONTROLLER_SOURCE to the extracted Controller tree. Tests are skipped only
 when that optional external application source is unavailable. No USB is opened.
@@ -26,13 +26,14 @@ from sdl_configurator.document import Draft
 from sdl_configurator.storage import EditorPaths, Workspace
 
 ROOT = Path(__file__).resolve().parents[1]
-CONTROLLER = Path(os.environ.get('SDL_CONTROLLER_SOURCE', str(ROOT.parent/'streamdeck-controller-0.1.0')))
+CONTROLLER = Path(os.environ.get('SDL_CONTROLLER_SOURCE', str(ROOT.parent/'controller')))
 pytestmark = [pytest.mark.integration, pytest.mark.skipif(
     not (CONTROLLER/'src/sdl_controller/main.py').is_file(), reason='Controller source not available; set SDL_CONTROLLER_SOURCE')]
 
 
 @pytest_asyncio.fixture
-async def live(tmp_path, request):
+async def live(tmp_path, request, monkeypatch):
+    monkeypatch.setenv("PYTHONPATH", str(ROOT/"src"))
     with tempfile.TemporaryDirectory(prefix='sdl-ci-') as runtime:
         runtime = Path(runtime)
         runtime.chmod(0o700)
@@ -46,6 +47,13 @@ async def live(tmp_path, request):
             'PYTHONPATH': str(ROOT/'src')+os.pathsep+str(CONTROLLER/'src'),
         })
         flags = ['--simulate']
+        if request.node.get_closest_marker('real_plugins'):
+            import shutil
+            flags.extend(['--allow-plugins','--plugin-mode','development'])
+            plugin_root=tmp_path/'controller-data/streamdeck-linux-simulator/plugins'
+            plugin_root.mkdir(mode=0o700,parents=True)
+            plugin_root.parent.chmod(0o700)
+            shutil.copytree(ROOT.parent/'plugins/cpu',plugin_root/'org.fnord.cpu/0.2.0')
         if request.node.get_closest_marker('real_execution'):
             flags.append('--allow-execution')
         with (tmp_path/'controller-output.log').open('wb') as output:
@@ -102,7 +110,7 @@ def task_action(marker):
 async def test_real_handshake_pull_and_independent_controller(live):
     backend, workspace, process, _ = live
     snapshot = await backend.snapshot()
-    assert snapshot['runtimeVersion'] == '0.1.0'
+    assert snapshot['runtimeVersion'] == '0.2.0'
     assert snapshot['simulator'] and not snapshot['executionEnabled']
     draft = await applied_draft(backend)
     assert not draft.differs_from_applied
@@ -245,3 +253,39 @@ async def test_safe_operations_never_launch_action_then_explicit_test_executes(l
     with pytest.raises(SdlError) as err:
         await backend.prepare_test(draft.document, item['id'])
     assert err.value.code == 'DRAFT_NOT_APPLIED'
+
+
+@pytest.mark.real_plugins
+async def test_editor_binding_apply_real_cpu_and_no_hidden_work(live):
+    from sdl_configurator.plugin_configuration import binding_for, display_policy
+    backend, workspace, process, _ = live
+    catalog=await backend.plugin_catalog()
+    p=catalog['packages'][0]
+    assert not catalog['workers']
+    await backend.rpc('plugins.approve',{k:p[k] for k in ('pluginId','pluginVersion','fingerprint','interpreterIdentity')}|{'confirmed':True})
+    draft=await applied_draft(backend)
+    root=draft.document['rootPageId']
+    child=draft.add_section(root,0,'No metrics')
+    binding=binding_for(p,p['manifest']['contributions'][0],{'scope':'total','label':'CPU'},2000)
+    draft.set_plugin(root,1,binding,display_policy())
+    # Offline/local rendering and saves never create demand.
+    await backend.render(copy.deepcopy(draft.document),root)
+    assert not (await backend.rpc('plugins.list'))['workers']
+    await commit(backend,draft)
+    for _ in range(140):
+        state=await backend.rpc('plugins.list')
+        if state['dynamicWrites'] and state['instances'] and state['instances'][0]['measurementAgeMs'] is not None:
+            break
+        await asyncio.sleep(.05)
+    else:
+        pytest.fail(str(state))
+    assert len(state['workers']) == 1
+    assert not state['resourceLimitsEnforced']  # Explicit development fixture only.
+    await backend.rpc('runtime.navigate',{'pageId':child,'expectedRevision':draft.base_revision})
+    for _ in range(50):
+        state=await backend.rpc('plugins.list')
+        if not state['workers'] and not state['stoppingWorkers']:break
+        await asyncio.sleep(.02)
+    assert not state['instances'] and not state['workers'] and not state['stoppingWorkers']
+    cached=await backend.plugin_catalog(cached=True)
+    assert cached['cached'] and cached['packages'][0]['pluginId'] == p['pluginId']

@@ -5,7 +5,7 @@
 - `sdl_controller`: single hardware owner, asyncio orchestration, persistence, framed local API, input state machine, launches and session lifecycle.
 - `sdl_cli`: a client of the same local API; never open the deck or write Controller-owned applied state directly.
 - Future `sdl_configurator`: a separate executable, sharing renderer/models; edits drafts and applies through IPC.
-- Plugins are explicitly deferred in version 0.1.0. Preserve binding/extension fields, display fallback content, and advertise capabilities honestly. Do not implement CPU/storage/web-service plugins while working on this milestone.
+- Version 0.2.0 implements approved polling/display plugins. Read `../docs/PLUGIN-HOST-0.2.0.md`. CPU sampling belongs in the package, not the host. Push, plugin commands and secret delivery remain unsupported. Keep inert legacy extension data intact.
 
 ## Non-negotiable safety/correctness rules
 - No implicit shell, `eval`, executable templates, splitting command strings or substituting future plugin output into commands.
@@ -20,7 +20,7 @@
 
 ## Changes and verification
 - Update schemas, implementation, tests and API documentation together.
-- Follow `docs/REQUIREMENTS.md` for deliberate version-0.1 scope changes to the original specification.
+- `docs/REQUIREMENTS.md` is the historical 0.1 baseline; `../docs/PLUGIN-HOST-0.2.0.md` supersedes its plugin exclusions.
 - `scripts/test.sh` runs tests and source safety/syntax checks. Ruff configuration is provided, but a full Ruff/type-check run was not available in the original execution environment.
 - Keep hardware tests separate from simulator/contract tests. Never report Ubuntu install, real HID behavior or systemd user-manager behavior as passed without actually performing those checks.
 - Do not ship fonts; declare system font dependencies.

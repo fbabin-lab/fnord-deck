@@ -10,7 +10,7 @@ from sdl_configurator.i18n import Messages
 def test_check_runs_without_gui_or_controller(capsys,tmp_path):
     assert main(['--check','--workspace',str(tmp_path/'workspace')]) == 0
     result=json.loads(capsys.readouterr().out)
-    assert result['version']=='0.1.0'
+    assert result['version']=='0.2.0'
     assert result['usbOwnership'] is False and result['plugins']=='deferred'
     assert result['fontAvailable']
     assert not (tmp_path/'workspace').exists()  # diagnostics are read-only

@@ -1,3 +1,5 @@
+> Historical baseline record. For the implemented 0.2.0 plugin release, see the repository root `docs/PLUGIN-HOST-0.2.0.md` and `docs/VERIFICATION-0.2.0.md`. Earlier plugin exclusions and test counts below describe the earlier milestone.
+
 # Verification report — version 0.1.0
 
 Date: September 28, 2026.
